@@ -134,17 +134,26 @@
 }
 
 /* PRODUCT PANEL */
-.product-overlay {
+.product-overlay,
+.checkout-overlay {
   position: fixed;
   inset: 0;
   background: rgba(20, 18, 16, 0.24);
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.product-overlay {
   z-index: 998;
 }
 
-.product-overlay.active {
+.checkout-overlay {
+  z-index: 1000;
+}
+
+.product-overlay.active,
+.checkout-overlay.active {
   opacity: 1;
   visibility: visible;
 }
@@ -176,7 +185,8 @@
   border-bottom: 1px solid var(--ink-faint);
 }
 
-.product-panel-meta {
+.product-panel-meta,
+.checkout-modal-meta {
   font-family: 'Josefin Sans', sans-serif;
   font-size: 10px;
   letter-spacing: 2px;
@@ -184,7 +194,8 @@
   color: var(--ink-soft);
 }
 
-.product-panel-close {
+.product-panel-close,
+.checkout-modal-close {
   background: transparent;
   border: none;
   color: var(--ink);
@@ -249,7 +260,8 @@
   margin-bottom: 22px;
 }
 
-.product-form-label {
+.product-form-label,
+.checkout-label {
   display: block;
   margin-bottom: 10px;
   font-family: 'Josefin Sans', sans-serif;
@@ -259,28 +271,46 @@
   color: var(--ink-soft);
 }
 
-.product-form-select {
+.product-form-select,
+.checkout-input,
+.checkout-select,
+.checkout-textarea {
   width: 100%;
   appearance: none;
   background: var(--paper);
   border: 1px solid var(--ink-faint);
   padding: 12px 14px;
-  font-family: 'Josefin Sans', sans-serif;
-  font-size: 12px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-size: 13px;
   color: var(--ink);
   cursor: pointer;
 }
 
-.product-pricing-box {
+.checkout-input,
+.checkout-select,
+.checkout-textarea {
+  cursor: text;
+}
+
+.checkout-select {
+  cursor: pointer;
+}
+
+.checkout-textarea {
+  min-height: 92px;
+  resize: vertical;
+}
+
+.product-pricing-box,
+.checkout-summary {
   background: var(--paper-2);
   border: 1px solid var(--ink-faint);
   padding: 18px;
   margin-bottom: 22px;
 }
 
-.product-pricing-row {
+.product-pricing-row,
+.checkout-summary-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -289,11 +319,13 @@
   border-bottom: 1px solid rgba(28, 26, 23, 0.08);
 }
 
-.product-pricing-row:last-child {
+.product-pricing-row:last-child,
+.checkout-summary-row:last-child {
   border-bottom: none;
 }
 
-.product-pricing-label {
+.product-pricing-label,
+.checkout-summary-label {
   font-family: 'Josefin Sans', sans-serif;
   font-size: 11px;
   letter-spacing: 2px;
@@ -301,26 +333,32 @@
   color: var(--ink-soft);
 }
 
-.product-pricing-value {
+.product-pricing-value,
+.checkout-summary-value {
   font-size: 15px;
   color: var(--ink);
+  text-align: right;
 }
 
-.product-ownership-note {
+.product-ownership-note,
+.checkout-note {
   font-size: 14px;
   line-height: 1.8;
   color: var(--ink-mid);
   margin-bottom: 24px;
 }
 
-.product-panel-actions {
+.product-panel-actions,
+.checkout-actions {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
 }
 
 .product-primary-btn,
-.product-secondary-btn {
+.product-secondary-btn,
+.checkout-primary-btn,
+.checkout-secondary-btn {
   font-family: 'Josefin Sans', sans-serif;
   font-size: 11px;
   letter-spacing: 2px;
@@ -331,30 +369,139 @@
   transition: all 0.3s ease;
 }
 
-.product-primary-btn {
+.product-primary-btn,
+.checkout-primary-btn {
   background: var(--gold);
   border: 1px solid var(--gold);
   color: var(--white);
   flex: 1;
 }
 
-.product-primary-btn:hover {
+.product-primary-btn:hover,
+.checkout-primary-btn:hover {
   background: transparent;
   color: var(--gold);
 }
 
-.product-secondary-btn {
+.product-secondary-btn,
+.checkout-secondary-btn {
   background: transparent;
   border: 1px solid var(--ink-faint);
   color: var(--ink);
 }
 
-.product-secondary-btn:hover {
+.product-secondary-btn:hover,
+.checkout-secondary-btn:hover {
   border-color: var(--ink);
 }
 
-body.panel-open {
+/* CHECKOUT MODAL */
+.checkout-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: min(860px, calc(100vw - 32px));
+  max-height: calc(100vh - 40px);
+  background: var(--paper);
+  border: 1px solid var(--ink-faint);
+  transform: translate(-50%, -48%);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+  z-index: 1001;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
   overflow: hidden;
+}
+
+.checkout-modal.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%);
+}
+
+.checkout-left,
+.checkout-right {
+  padding: 28px;
+  overflow-y: auto;
+  max-height: calc(100vh - 40px);
+}
+
+.checkout-left {
+  border-right: 1px solid var(--ink-faint);
+}
+
+.checkout-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.checkout-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 34px;
+  font-weight: 400;
+  line-height: 1.15;
+  margin-bottom: 10px;
+}
+
+.checkout-subtitle {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--ink-soft);
+  margin-bottom: 24px;
+}
+
+.checkout-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.checkout-grid-full {
+  grid-column: 1 / -1;
+}
+
+.checkout-right-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 400;
+  margin-bottom: 18px;
+}
+
+.checkout-product-box {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.checkout-product-thumb {
+  width: 112px;
+  height: 84px;
+  object-fit: cover;
+  background: #eee;
+  flex-shrink: 0;
+}
+
+.checkout-product-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 400;
+  margin-bottom: 6px;
+}
+
+.checkout-product-desc {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+
+.checkout-message {
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--gold);
+  min-height: 20px;
 }
 
 /* RESPONSIVE */
@@ -373,6 +520,15 @@ body.panel-open {
 
   .feature-strip {
     grid-template-columns: 1fr;
+  }
+
+  .checkout-modal {
+    grid-template-columns: 1fr;
+  }
+
+  .checkout-left {
+    border-right: none;
+    border-bottom: 1px solid var(--ink-faint);
   }
 }
 
@@ -401,6 +557,21 @@ body.panel-open {
     right: -100%;
     max-width: 100%;
   }
+
+  .checkout-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .checkout-modal {
+    width: calc(100vw - 16px);
+    max-height: calc(100vh - 16px);
+  }
+
+  .checkout-left,
+  .checkout-right {
+    padding: 20px;
+    max-height: none;
+  }
 }
 </style>
 </head>
@@ -411,6 +582,7 @@ body.panel-open {
 <div class="cursor-ring" id="cursorRing"></div>
 
 <div class="product-overlay" id="productOverlay"></div>
+<div class="checkout-overlay" id="checkoutOverlay"></div>
 
 <aside class="product-panel" id="productPanel" aria-hidden="true">
   <div class="product-panel-header">
@@ -463,6 +635,100 @@ body.panel-open {
     </div>
   </div>
 </aside>
+
+<section class="checkout-modal" id="checkoutModal" aria-hidden="true">
+  <div class="checkout-left">
+    <div class="checkout-modal-header">
+      <div class="checkout-modal-meta">Checkout Details</div>
+      <button class="checkout-modal-close" type="button" id="checkoutCloseBtn">Close</button>
+    </div>
+
+    <h2 class="checkout-title">Complete Your Rental Request</h2>
+    <p class="checkout-subtitle">
+      Fill in your details to continue with this rent-to-own selection.
+    </p>
+
+    <form id="checkoutForm">
+      <div class="checkout-grid">
+        <div>
+          <label class="checkout-label" for="fullName">Full Name</label>
+          <input class="checkout-input" id="fullName" name="fullName" type="text" required>
+        </div>
+
+        <div>
+          <label class="checkout-label" for="emailAddress">Email</label>
+          <input class="checkout-input" id="emailAddress" name="emailAddress" type="email" required>
+        </div>
+
+        <div>
+          <label class="checkout-label" for="phoneNumber">Phone Number</label>
+          <input class="checkout-input" id="phoneNumber" name="phoneNumber" type="tel" required>
+        </div>
+
+        <div>
+          <label class="checkout-label" for="rentalStartDate">Rental Start Date</label>
+          <input class="checkout-input" id="rentalStartDate" name="rentalStartDate" type="date" required>
+        </div>
+
+        <div class="checkout-grid-full">
+          <label class="checkout-label" for="homeAddress">Address</label>
+          <textarea class="checkout-textarea" id="homeAddress" name="homeAddress" required></textarea>
+        </div>
+
+        <div class="checkout-grid-full">
+          <label class="checkout-label" for="notes">Notes</label>
+          <textarea class="checkout-textarea" id="notes" name="notes" placeholder="Optional"></textarea>
+        </div>
+      </div>
+
+      <div class="checkout-actions" style="margin-top: 26px;">
+        <button class="checkout-primary-btn" type="submit">Submit Request</button>
+        <button class="checkout-secondary-btn" type="button" id="checkoutBackBtn">Back</button>
+      </div>
+
+      <div class="checkout-message" id="checkoutMessage"></div>
+    </form>
+  </div>
+
+  <div class="checkout-right">
+    <div class="checkout-right-title">Order Summary</div>
+
+    <div class="checkout-product-box">
+      <img src="" alt="" class="checkout-product-thumb" id="summaryImage">
+      <div>
+        <div class="checkout-product-name" id="summaryTitle"></div>
+        <div class="checkout-product-desc" id="summaryDescription"></div>
+      </div>
+    </div>
+
+    <div class="checkout-summary">
+      <div class="checkout-summary-row">
+        <span class="checkout-summary-label">Retail Value</span>
+        <span class="checkout-summary-value" id="summaryRetail"></span>
+      </div>
+      <div class="checkout-summary-row">
+        <span class="checkout-summary-label">Rental Period</span>
+        <span class="checkout-summary-value" id="summaryMonths"></span>
+      </div>
+      <div class="checkout-summary-row">
+        <span class="checkout-summary-label">Monthly Payment</span>
+        <span class="checkout-summary-value" id="summaryMonthly"></span>
+      </div>
+      <div class="checkout-summary-row">
+        <span class="checkout-summary-label">Total Payment</span>
+        <span class="checkout-summary-value" id="summaryTotal"></span>
+      </div>
+      <div class="checkout-summary-row">
+        <span class="checkout-summary-label">Ownership</span>
+        <span class="checkout-summary-value">After Final Payment</span>
+      </div>
+    </div>
+
+    <p class="checkout-note">
+      This request records your selected item, rental period, and customer details. The next phase can connect this directly to email, WhatsApp, or a backend checkout flow.
+    </p>
+  </div>
+</section>
 
 <nav>
   <a href="index.html" class="nav-logo">
@@ -541,11 +807,7 @@ const data = [
     category: "living",
     img: "img-furniture/sofa.jpg",
     description: "A warm neutral sofa designed for calm, comfortable, everyday living.",
-    markupRates: {
-      3: 1.18,
-      6: 1.24,
-      12: 1.36
-    }
+    markupRates: { 3: 1.18, 6: 1.24, 12: 1.36 }
   },
   {
     id: 2,
@@ -554,11 +816,7 @@ const data = [
     category: "living",
     img: "img-furniture/chair.jpg",
     description: "A compact accent chair with a balanced Japandi silhouette and soft presence.",
-    markupRates: {
-      3: 1.18,
-      6: 1.24,
-      12: 1.36
-    }
+    markupRates: { 3: 1.18, 6: 1.24, 12: 1.36 }
   },
   {
     id: 3,
@@ -567,11 +825,7 @@ const data = [
     category: "bedroom",
     img: "img-furniture/bedframe.jpg",
     description: "A solid wood bed frame with a restrained form and a grounding natural tone.",
-    markupRates: {
-      3: 1.18,
-      6: 1.24,
-      12: 1.36
-    }
+    markupRates: { 3: 1.18, 6: 1.24, 12: 1.36 }
   },
   {
     id: 4,
@@ -580,11 +834,7 @@ const data = [
     category: "bedroom",
     img: "img-furniture/wardrobe.png",
     description: "A spacious oak wardrobe made to keep the room calm, ordered, and practical.",
-    markupRates: {
-      3: 1.18,
-      6: 1.24,
-      12: 1.36
-    }
+    markupRates: { 3: 1.18, 6: 1.24, 12: 1.36 }
   },
   {
     id: 5,
@@ -593,11 +843,7 @@ const data = [
     category: "dining",
     img: "img-furniture/diningtable.png",
     description: "A clean dining arrangement for daily meals, conversation, and quiet gathering.",
-    markupRates: {
-      3: 1.18,
-      6: 1.24,
-      12: 1.36
-    }
+    markupRates: { 3: 1.18, 6: 1.24, 12: 1.36 }
   }
 ];
 
@@ -619,6 +865,21 @@ const panelBasePrice = document.getElementById("panelBasePrice");
 const monthlyPayment = document.getElementById("monthlyPayment");
 const totalPayment = document.getElementById("totalPayment");
 
+const checkoutModal = document.getElementById("checkoutModal");
+const checkoutOverlay = document.getElementById("checkoutOverlay");
+const checkoutCloseBtn = document.getElementById("checkoutCloseBtn");
+const checkoutBackBtn = document.getElementById("checkoutBackBtn");
+const checkoutForm = document.getElementById("checkoutForm");
+const checkoutMessage = document.getElementById("checkoutMessage");
+
+const summaryImage = document.getElementById("summaryImage");
+const summaryTitle = document.getElementById("summaryTitle");
+const summaryDescription = document.getElementById("summaryDescription");
+const summaryRetail = document.getElementById("summaryRetail");
+const summaryMonths = document.getElementById("summaryMonths");
+const summaryMonthly = document.getElementById("summaryMonthly");
+const summaryTotal = document.getElementById("summaryTotal");
+
 let activeProduct = null;
 
 function formatCurrency(value) {
@@ -638,6 +899,21 @@ function updatePanelPricing() {
   const pricing = getPricing(activeProduct, months);
   monthlyPayment.textContent = formatCurrency(pricing.monthly);
   totalPayment.textContent = formatCurrency(pricing.total);
+}
+
+function updateCheckoutSummary() {
+  if (!activeProduct) return;
+  const months = Number(rentalPeriod.value);
+  const pricing = getPricing(activeProduct, months);
+
+  summaryImage.src = activeProduct.img;
+  summaryImage.alt = activeProduct.name;
+  summaryTitle.textContent = activeProduct.name;
+  summaryDescription.textContent = activeProduct.description;
+  summaryRetail.textContent = formatCurrency(activeProduct.price);
+  summaryMonths.textContent = `${months} Months`;
+  summaryMonthly.textContent = formatCurrency(pricing.monthly);
+  summaryTotal.textContent = formatCurrency(pricing.total);
 }
 
 function openProductPanel(productId) {
@@ -661,8 +937,28 @@ function openProductPanel(productId) {
 function closeProductPanel() {
   productPanel.classList.remove("active");
   productOverlay.classList.remove("active");
-  document.body.classList.remove("panel-open");
   productPanel.setAttribute("aria-hidden", "true");
+  if (!checkoutModal.classList.contains("active")) {
+    document.body.classList.remove("panel-open");
+  }
+}
+
+function openCheckoutModal() {
+  updateCheckoutSummary();
+  checkoutModal.classList.add("active");
+  checkoutOverlay.classList.add("active");
+  checkoutModal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("panel-open");
+  checkoutMessage.textContent = "";
+}
+
+function closeCheckoutModal() {
+  checkoutModal.classList.remove("active");
+  checkoutOverlay.classList.remove("active");
+  checkoutModal.setAttribute("aria-hidden", "true");
+  if (!productPanel.classList.contains("active")) {
+    document.body.classList.remove("panel-open");
+  }
 }
 
 function render(list) {
@@ -703,37 +999,57 @@ function update() {
 
 category.addEventListener("change", update);
 sort.addEventListener("change", update);
-rentalPeriod.addEventListener("change", updatePanelPricing);
+
+rentalPeriod.addEventListener("change", () => {
+  updatePanelPricing();
+  if (checkoutModal.classList.contains("active")) {
+    updateCheckoutSummary();
+  }
+});
+
 panelCloseBtn.addEventListener("click", closeProductPanel);
 panelBackBtn.addEventListener("click", closeProductPanel);
 productOverlay.addEventListener("click", closeProductPanel);
 
 panelProceedBtn.addEventListener("click", () => {
+  openCheckoutModal();
+});
+
+checkoutCloseBtn.addEventListener("click", closeCheckoutModal);
+checkoutBackBtn.addEventListener("click", closeCheckoutModal);
+checkoutOverlay.addEventListener("click", closeCheckoutModal);
+
+checkoutForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+
   if (!activeProduct) return;
 
   const months = Number(rentalPeriod.value);
   const pricing = getPricing(activeProduct, months);
 
-  const checkoutData = {
+  const payload = {
     productId: activeProduct.id,
     productName: activeProduct.name,
-    months,
-    monthly: pricing.monthly,
-    total: pricing.total
+    productPrice: activeProduct.price,
+    rentalMonths: months,
+    monthlyPayment: pricing.monthly,
+    totalPayment: pricing.total,
+    fullName: document.getElementById("fullName").value.trim(),
+    emailAddress: document.getElementById("emailAddress").value.trim(),
+    phoneNumber: document.getElementById("phoneNumber").value.trim(),
+    rentalStartDate: document.getElementById("rentalStartDate").value,
+    homeAddress: document.getElementById("homeAddress").value.trim(),
+    notes: document.getElementById("notes").value.trim()
   };
 
-  localStorage.setItem("autro-checkout-item", JSON.stringify(checkoutData));
-  alert(
-    `Selected: ${activeProduct.name}\n` +
-    `Rental period: ${months} months\n` +
-    `Monthly payment: ${formatCurrency(pricing.monthly)}\n` +
-    `Total payment: ${formatCurrency(pricing.total)}\n\n` +
-    `Next phase: connect this button to your checkout or enquiry flow.`
-  );
+  localStorage.setItem("autro-rental-request", JSON.stringify(payload));
+  checkoutMessage.textContent = "Request saved locally. Next phase can connect this to WhatsApp, email, or backend checkout.";
+  console.log("AUTRO rental request:", payload);
 });
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
+    closeCheckoutModal();
     closeProductPanel();
   }
 });

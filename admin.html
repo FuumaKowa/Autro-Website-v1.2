@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin | Autro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  font-family: sans-serif;
+  padding: 40px;
+  background: #f7f5f2;
+}
+
+.container {
+  max-width: 500px;
+  margin: auto;
+}
+
+input, textarea, select, button {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+button {
+  background: black;
+  color: white;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>Add Furniture</h2>
+
+  <input id="name" placeholder="Name">
+  <input id="price" type="number" placeholder="Price">
+
+  <select id="category">
+    <option value="living">Living</option>
+    <option value="bedroom">Bedroom</option>
+    <option value="dining">Dining</option>
+  </select>
+
+  <textarea id="description" placeholder="Description"></textarea>
+
+  <input id="img" placeholder="Image path (img-furniture/...)">
+
+  <button onclick="addProduct()">Add Product</button>
+</div>
+
+<script>
+function getProducts(){
+  return JSON.parse(localStorage.getItem("autro-products")) || [];
+}
+
+function saveProducts(data){
+  localStorage.setItem("autro-products", JSON.stringify(data));
+}
+
+function addProduct(){
+  const name = document.getElementById("name").value;
+  const price = Number(document.getElementById("price").value);
+  const category = document.getElementById("category").value;
+  const description = document.getElementById("description").value;
+  const img = document.getElementById("img").value;
+
+  if(!name || !price || !img) return alert("Fill all required");
+
+  const products = getProducts();
+
+  const newProduct = {
+    id: Date.now(),
+    name,
+    price,
+    category,
+    description,
+    img,
+    markupRates: {
+      3: 1.18,
+      6: 1.24,
+      12: 1.36
+    }
+  };
+
+  products.push(newProduct);
+  saveProducts(products);
+
+  alert("Added successfully");
+
+  location.reload();
+}
+if (sessionStorage.getItem("autro-admin") !== "true") {
+  window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>

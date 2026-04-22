@@ -92,3 +92,24 @@ if (languageSwitcher) {
     applyTranslations(event.target.value);
   });
 }
+
+const adminTrigger = document.getElementById("adminTrigger");
+
+if (adminTrigger) {
+  adminTrigger.addEventListener("click", (event) => {
+    event.preventDefault();
+    openAdminLogin();
+  });
+}
+
+function openAdminLogin() {
+  const user = prompt("Admin Username:");
+  const pass = prompt("Admin Password:");
+
+  if (user === "admin" && pass === "1234") {
+    sessionStorage.setItem("autro-admin", "true");
+    window.location.href = "admin.html";
+  } else if (user !== null && pass !== null) {
+    alert("Access denied");
+  }
+}

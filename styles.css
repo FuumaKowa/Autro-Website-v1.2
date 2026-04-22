@@ -23,6 +23,8 @@ html {
   font-size: 16px;
 }
 
+
+
 body {
   font-family: 'Zen Kaku Gothic New', sans-serif;
   font-size: 17px;
@@ -90,16 +92,17 @@ nav {
   border-bottom: 1px solid var(--ink-faint);
 }
 
+.nav-logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
 .nav-logo {
   display: flex;
   align-items: center;
   gap: 14px;
   text-decoration: none;
-}
-
-.nav-logo-mark {
-  width: 28px;
-  height: 28px;
 }
 
 .nav-logo-text {
@@ -109,6 +112,29 @@ nav {
   letter-spacing: 6px;
   color: var(--ink);
   text-transform: uppercase;
+}
+
+.logo-o {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 6px;
+  color: var(--ink);
+  text-transform: uppercase;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0 0 0 2px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.logo-o:focus {
+  outline: none;
+}
+
+.logo-o:hover {
+  color: var(--ink);
 }
 
 .nav-links {
