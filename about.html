@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Autro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Zen+Kaku+Gothic+New:wght@400;500&family=Josefin+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <nav>
+    <a class="nav-logo" href="index.html">
+      <svg class="nav-logo-mark" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="14" cy="14" r="12" stroke="#1c1a17" stroke-width="1"/>
+        <line x1="4" y1="22" x2="26" y2="8" stroke="#1c1a17" stroke-width="0.8"/>
+        <circle cx="15" cy="16" r="3" fill="#b8923a"/>
+      </svg>
+      <span class="nav-logo-text">Autro</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+      <li><a href="about.html" data-i18n="nav.about">About</a></li>
+      <li><a href="partners.html" data-i18n="nav.partners">Partners</a></li>
+      <li><a href="index.html#contact" data-i18n="nav.contact">Contact</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <select id="languageSwitcher" class="lang-dropdown" aria-label="Language switcher">
+        <option value="en">English</option>
+        <option value="zh">中文</option>
+      </select>
+      <a class="nav-cta" href="index.html#contact" data-i18n="nav.cta">Begin</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="page-hero">
+      <div class="page-hero-visual">
+        <div class="page-hero-circle">
+          <svg viewBox="0 0 380 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="190" cy="190" r="155" stroke="#1c1a17" stroke-width="1.2" stroke-dasharray="980" stroke-dashoffset="980" stroke-linecap="round" style="animation: inkDraw 2.2s 0.3s cubic-bezier(0.4,0,0.2,1) both; fill: none;" />
+            <ellipse cx="191" cy="189" rx="153" ry="157" stroke="#1c1a17" stroke-width="0.25" stroke-dasharray="980" stroke-dashoffset="980" opacity="0.18" style="animation: inkDraw 2.4s 0.5s cubic-bezier(0.4,0,0.2,1) both; fill: none;" />
+            <line x1="58" y1="305" x2="368" y2="180" stroke="#1c1a17" stroke-width="0.75" stroke-linecap="round" stroke-dasharray="460" stroke-dashoffset="460" style="animation: inkDraw 1.4s 1.8s ease both;" />
+            <circle cx="300" cy="240" r="0" fill="#b8923a" style="animation: goldAppear 0.6s 2.8s ease both; r: 10;" />
+            <circle cx="300" cy="240" r="0" fill="#d4aa5a" opacity="0.25" style="animation: goldAppear 0.4s 3s ease both; r: 16;" />
+          </svg>
+        </div>
+      </div>
+
+      <div class="page-hero-text">
+        <p class="page-hero-meta" data-i18n="about.meta">Brand Story</p>
+        <p class="page-hero-kicker-kanji">満</p>
+        <p class="page-hero-kicker" data-i18n="about.kicker">About Autro</p>
+        <h1 class="page-hero-title" data-i18n="about.title">From a house to a true home</h1>
+        <p class="page-hero-desc" data-i18n="about.desc">AUTRO was built on a simple belief: furniture is not the end product. The true goal is the feeling of coming home.</p>
+      </div>
+    </section>
+
+    <section class="dual-section">
+      <div class="dual-copy">
+        <p class="section-label" data-i18n="about.section1.label">Origin</p>
+        <h2 class="dual-title" data-i18n="about.section1.title">Why AUTRO exists</h2>
+        <p data-i18n="about.section1.p1">Many people manage to buy a house, but still do not feel that they have a home. A home is not completed by furniture alone. It is completed by atmosphere, comfort, and the emotional sense of belonging.</p>
+        <p data-i18n="about.section1.p2">The name AUTRO comes from the idea of an outro, the final chapter of a journey. For us, furniture and lifestyle are the final chapter that makes a space feel complete.</p>
+      </div>
+
+      <div class="dual-copy">
+        <p class="section-label" data-i18n="about.section2.label">What We Believe</p>
+        <h2 class="dual-title" data-i18n="about.section2.title">Simple, warm, and quietly refined</h2>
+        <p data-i18n="about.section2.p1">AUTRO is rooted in Japanese-inspired and Japandi aesthetics. We value simplicity, natural wood, warmth, breathing space, and calm over visual noise.</p>
+        <p data-i18n="about.section2.p2">We want people to feel comfortable rather than impressed. Real quality is not distance. It is a space people want to stay in.</p>
+      </div>
+    </section>
+
+    <section class="content-section alt-bg">
+      <p class="section-label">Values</p>
+      <h2 class="content-title">What shapes the brand</h2>
+      <div class="info-grid">
+        <div class="info-card">
+          <p class="info-card-num">01</p>
+          <h3 data-i18n="about.values.0.title">Minimal</h3>
+          <p data-i18n="about.values.0.body">Less clutter, more clarity and ease.</p>
+          <div class="why-gold-line"></div>
+        </div>
+        <div class="info-card">
+          <p class="info-card-num">02</p>
+          <h3 data-i18n="about.values.1.title">Warm</h3>
+          <p data-i18n="about.values.1.body">Natural textures and human comfort first.</p>
+          <div class="why-gold-line"></div>
+        </div>
+        <div class="info-card">
+          <p class="info-card-num">03</p>
+          <h3 data-i18n="about.values.2.title">Balanced</h3>
+          <p data-i18n="about.values.2.body">A calm space with thoughtful emptiness and rhythm.</p>
+          <div class="why-gold-line"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-newsletter">
+      <div class="newsletter-left">
+        <h2 data-i18n="common.ctaTitle">Let’s build a complete living experience</h2>
+        <p data-i18n="common.ctaText">Whether you are furnishing a home, styling a project, or looking for a supplier partnership, AUTRO is built to connect the right pieces.</p>
+      </div>
+      <a class="btn-gold" href="index.html#contact" data-i18n="common.ctaButton">Start a Conversation</a>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-top">
+      <div>
+        <p class="footer-brand-kanji">満</p>
+        <p class="footer-brand-name">Autro</p>
+        <p class="footer-tagline" data-i18n="footer.tagline">The final piece of home</p>
+        <p class="footer-brand-desc" data-i18n="footer.desc">A furniture, space, and lifestyle platform designed to make homes feel complete.</p>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="footer.company">Company</h4>
+        <ul>
+          <li><a href="about.html" data-i18n="nav.about">About</a></li>
+          <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="footer.services">Services</h4>
+        <ul>
+          <li><a href="index.html#solutions" data-i18n="nav.solutions">Solutions</a></li>
+          <li><a href="index.html#care" data-i18n="nav.care">Autro Care</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="footer.support">Support</h4>
+        <ul>
+          <li><a href="partners.html" data-i18n="nav.partners">Partners</a></li>
+          <li><a href="index.html#contact" data-i18n="nav.contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span data-i18n="footer.copy">© 2026 Autro. The final piece of home.</span>
+    </div>
+  </footer>
+
+  <script src="translations.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

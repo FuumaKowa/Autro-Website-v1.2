@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Furniture | Autro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="nav-logo-text">AUTRO</span>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="furniture.html">Furniture</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+
+  <div class="nav-actions">
+    <select id="languageSwitcher" class="lang-dropdown">
+      <option value="en">EN</option>
+      <option value="zh">中文</option>
+    </select>
+  </div>
+</nav>
+
+<section class="page-hero">
+  <div class="page-hero-text">
+    <h1 class="page-hero-title">Furniture</h1>
+    <p class="page-hero-desc">
+      Curated pieces to complete your home atmosphere.
+    </p>
+  </div>
+</section>
+
+<section class="section-browse">
+
+  <div class="browse-header">
+    <h2>Collection</h2>
+    <p>Browse by category and lifestyle</p>
+  </div>
+
+  <div class="filter-bar">
+    <select id="category">
+      <option value="all">All</option>
+      <option value="living">Living Room</option>
+      <option value="bedroom">Bedroom</option>
+      <option value="dining">Dining</option>
+    </select>
+
+    <select id="sort">
+      <option value="default">Sort</option>
+      <option value="low">Price Low</option>
+      <option value="high">Price High</option>
+    </select>
+  </div>
+
+  <div class="browse-grid" id="grid"></div>
+
+</section>
+
+<script src="translations.js"></script>
+<script src="script.js"></script>
+
+<script>
+const data = [
+  {name:"Minimal Sofa",price:1200,category:"living",img:"https://via.placeholder.com/400"},
+  {name:"Japandi Chair",price:300,category:"living",img:"https://via.placeholder.com/400"},
+  {name:"Wood Bed Frame",price:900,category:"bedroom",img:"https://via.placeholder.com/400"},
+  {name:"Wardrobe Oak",price:1500,category:"bedroom",img:"https://via.placeholder.com/400"},
+  {name:"Dining Table Set",price:1100,category:"dining",img:"https://via.placeholder.com/400"},
+];
+
+const grid = document.getElementById("grid");
+const category = document.getElementById("category");
+const sort = document.getElementById("sort");
+
+function render(list){
+  grid.innerHTML = "";
+  list.forEach(p=>{
+    grid.innerHTML += `
+      <div class="browse-card">
+        <img src="${p.img}">
+        <h3>${p.name}</h3>
+        <p>RM ${p.price}</p>
+      </div>
+    `;
+  });
+}
+
+function update(){
+  let filtered = [...data];
+
+  if(category.value !== "all"){
+    filtered = filtered.filter(p=>p.category === category.value);
+  }
+
+  if(sort.value === "low"){
+    filtered.sort((a,b)=>a.price-b.price);
+  }
+  if(sort.value === "high"){
+    filtered.sort((a,b)=>b.price-a.price);
+  }
+
+  render(filtered);
+}
+
+category.addEventListener("change",update);
+sort.addEventListener("change",update);
+
+render(data);
+</script>
+
+</body>
+</html>
