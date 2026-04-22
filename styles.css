@@ -437,6 +437,64 @@ nav {
   animation: scrollLine 2s 1s infinite ease;
 }
 
+.filter-bar select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--ink-faint);
+
+  padding: 10px 36px 10px 14px;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+
+  cursor: pointer;
+  position: relative;
+
+  transition: all 0.25s ease;
+}
+
+/* HOVER + FOCUS */
+.filter-bar select:hover {
+  border-color: var(--ink);
+}
+
+.filter-bar select:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+/* CUSTOM ARROW */
+.filter-bar {
+  position: relative;
+  display: flex;
+  gap: 12px;
+}
+
+.filter-bar::after {
+  content: '';
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid var(--ink);
+  border-bottom: 1.5px solid var(--ink);
+  transform: translateY(-50%) rotate(45deg);
+}
+
+/* FIX EACH SELECT POSITION */
+.filter-bar select {
+  background-image: none;
+}
+
 .section-browse {
   padding: 100px 8%;
   background: #f8f7f4;
@@ -463,14 +521,15 @@ nav {
 }
 
 .browse-card {
-  text-decoration: none;
-  color: #1c1a17;
-  transition: 0.3s;
+  width: 100%;
+  aspect-ratio: 4 / 3;   /* SAME SIZE for all */
+  overflow: hidden;
 }
 
 .browse-card img {
   width: 100%;
-  background: #eee;
+  height: 100%;
+  object-fit: cover;   /* crop nicely */
 }
 
 .browse-card h3 {
