@@ -1,0 +1,232 @@
+.admin-page {
+  padding: 110px 6% 80px;
+  min-height: 100vh;
+  background: var(--paper);
+}
+
+.admin-hero {
+  margin-bottom: 48px;
+}
+
+.admin-kicker {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+}
+
+.admin-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(42px, 5vw, 62px);
+  font-weight: 400;
+  line-height: 1.05;
+  margin-bottom: 16px;
+  color: var(--ink);
+}
+
+.admin-desc {
+  max-width: 620px;
+  font-size: 18px;
+  line-height: 1.8;
+  color: var(--ink-mid);
+}
+
+.admin-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.admin-form-card,
+.admin-list-card {
+  background: var(--paper);
+  border: 1px solid var(--ink-faint);
+  padding: 28px;
+}
+
+.admin-card-head {
+  margin-bottom: 24px;
+}
+
+.admin-card-head h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 30px;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.admin-card-head p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.admin-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-field label,
+.admin-preview-label {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.admin-field input,
+.admin-field select,
+.admin-field textarea {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid var(--ink-faint);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-size: 14px;
+  outline: none;
+}
+
+.admin-field textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.admin-field input:focus,
+.admin-field select:focus,
+.admin-field textarea:focus {
+  border-color: var(--gold);
+}
+
+.admin-preview-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-preview-image {
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: #ece8e1;
+  border: 1px solid var(--ink-faint);
+}
+
+.admin-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.admin-submit-btn,
+.admin-secondary-btn,
+.admin-logout-btn {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 14px 18px;
+  transition: all 0.3s ease;
+}
+
+.admin-submit-btn {
+  background: var(--gold);
+  color: var(--white);
+  border: 1px solid var(--gold);
+  flex: 1;
+}
+
+.admin-submit-btn:hover {
+  background: transparent;
+  color: var(--gold);
+}
+
+.admin-secondary-btn,
+.admin-logout-btn {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--ink-faint);
+}
+
+.admin-secondary-btn:hover,
+.admin-logout-btn:hover {
+  border-color: var(--ink);
+}
+
+.admin-message {
+  min-height: 22px;
+  font-size: 13px;
+  color: var(--gold);
+}
+
+.catalog-list {
+  display: grid;
+  gap: 14px;
+}
+
+.catalog-item {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 14px;
+  align-items: start;
+  padding: 14px;
+  border: 1px solid var(--ink-faint);
+  background: var(--paper-2);
+}
+
+.catalog-item img {
+  width: 92px;
+  height: 72px;
+  object-fit: cover;
+  background: #ece8e1;
+}
+
+.catalog-item-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.catalog-item-meta {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+}
+
+.catalog-item-desc {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--ink-mid);
+}
+
+.catalog-empty {
+  padding: 18px;
+  border: 1px dashed var(--ink-faint);
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
+@media (max-width: 980px) {
+  .admin-layout {
+    grid-template-columns: 1fr;
+  }
+}

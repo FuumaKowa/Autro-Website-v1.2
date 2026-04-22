@@ -1,103 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Admin | Autro</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>Admin | Autro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-body {
-  font-family: sans-serif;
-  padding: 40px;
-  background: #f7f5f2;
-}
-
-.container {
-  max-width: 500px;
-  margin: auto;
-}
-
-input, textarea, select, button {
-  width: 100%;
-  margin-bottom: 15px;
-  padding: 10px;
-  border: 1px solid #ccc;
-}
-
-button {
-  background: black;
-  color: white;
-  cursor: pointer;
-}
-</style>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="admin.css">
 </head>
-
 <body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
 
-<div class="container">
-  <h2>Add Furniture</h2>
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <span class="nav-logo-text">AUTRO</span>
+    </a>
 
-  <input id="name" placeholder="Name">
-  <input id="price" type="number" placeholder="Price">
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="furniture.html">Furniture</a></li>
+      <li><a href="admin.html">Admin</a></li>
+    </ul>
 
-  <select id="category">
-    <option value="living">Living</option>
-    <option value="bedroom">Bedroom</option>
-    <option value="dining">Dining</option>
-  </select>
+    <div class="nav-actions">
+      <button type="button" class="admin-logout-btn" id="logoutBtn">Logout</button>
+    </div>
+  </nav>
 
-  <textarea id="description" placeholder="Description"></textarea>
+  <main class="admin-page">
+    <section class="admin-hero">
+      <div>
+        <p class="admin-kicker">Catalog Management</p>
+        <h1 class="admin-title">Add Furniture Item</h1>
+        <p class="admin-desc">
+          Upload an image, fill in the product details, and publish directly to the catalog.
+        </p>
+      </div>
+    </section>
 
-  <input id="img" placeholder="Image path (img-furniture/...)">
+    <section class="admin-layout">
+      <div class="admin-form-card">
+        <div class="admin-card-head">
+          <h2>New Item</h2>
+          <p>Fields marked required must be filled before publishing.</p>
+        </div>
 
-  <button onclick="addProduct()">Add Product</button>
-</div>
+        <form id="adminForm" class="admin-form">
+          <div class="admin-field">
+            <label for="itemName">Name</label>
+            <input type="text" id="itemName" name="itemName" required>
+          </div>
 
-<script>
-function getProducts(){
-  return JSON.parse(localStorage.getItem("autro-products")) || [];
-}
+          <div class="admin-field">
+            <label for="itemPrice">Price (RM)</label>
+            <input type="number" id="itemPrice" name="itemPrice" min="0" step="0.01" required>
+          </div>
 
-function saveProducts(data){
-  localStorage.setItem("autro-products", JSON.stringify(data));
-}
+          <div class="admin-field">
+            <label for="itemCategory">Category</label>
+            <select id="itemCategory" name="itemCategory" required>
+              <option value="living">Living</option>
+              <option value="bedroom">Bedroom</option>
+              <option value="dining">Dining</option>
+              <option value="decor">Decor</option>
+            </select>
+          </div>
 
-function addProduct(){
-  const name = document.getElementById("name").value;
-  const price = Number(document.getElementById("price").value);
-  const category = document.getElementById("category").value;
-  const description = document.getElementById("description").value;
-  const img = document.getElementById("img").value;
+          <div class="admin-field">
+            <label for="itemDescription">Description</label>
+            <textarea id="itemDescription" name="itemDescription" required></textarea>
+          </div>
 
-  if(!name || !price || !img) return alert("Fill all required");
+          <div class="admin-field">
+            <label for="itemImage">Image</label>
+            <input type="file" id="itemImage" name="itemImage" accept="image/*" required>
+          </div>
 
-  const products = getProducts();
+          <div class="admin-preview-wrap">
+            <p class="admin-preview-label">Preview</p>
+            <img id="imagePreview" class="admin-preview-image" alt="Preview" hidden>
+          </div>
 
-  const newProduct = {
-    id: Date.now(),
-    name,
-    price,
-    category,
-    description,
-    img,
-    markupRates: {
-      3: 1.18,
-      6: 1.24,
-      12: 1.36
-    }
-  };
+          <div class="admin-actions">
+            <button type="submit" class="admin-submit-btn" id="submitBtn">Publish Item</button>
+            <button type="button" class="admin-secondary-btn" id="resetBtn">Reset</button>
+          </div>
 
-  products.push(newProduct);
-  saveProducts(products);
+          <p class="admin-message" id="adminMessage"></p>
+        </form>
+      </div>
 
-  alert("Added successfully");
+      <div class="admin-list-card">
+        <div class="admin-card-head">
+          <h2>Current Catalog</h2>
+          <p>Live data from Supabase.</p>
+        </div>
 
-  location.reload();
-}
-if (sessionStorage.getItem("autro-admin") !== "true") {
-  window.location.href = "index.html";
-}
-</script>
+        <div id="catalogList" class="catalog-list"></div>
+      </div>
+    </section>
+  </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="script.js"></script>
+  <script src="admin.js"></script>
 </body>
 </html>
