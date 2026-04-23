@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Agent Login | Autro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .auth-page{min-height:100vh;display:grid;place-items:center;padding:110px 6%;background:var(--paper)}
+    .auth-card{width:min(420px,100%);background:var(--paper);border:1px solid var(--ink-faint);padding:28px}
+    .auth-title{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:400;margin-bottom:10px}
+    .auth-desc{font-size:14px;color:var(--ink-soft);margin-bottom:20px}
+    .auth-field{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+    .auth-field label{font-family:'Josefin Sans',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--ink-soft)}
+    .auth-field input{padding:13px 14px;border:1px solid var(--ink-faint);background:var(--paper);font-size:14px}
+    .auth-btn{width:100%;padding:14px 18px;background:var(--gold);color:var(--white);border:1px solid var(--gold);font-family:'Josefin Sans',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer}
+    .auth-msg{min-height:20px;margin-top:14px;font-size:13px;color:#9d4a3f}
+  </style>
+</head>
+<body>
+  <main class="auth-page">
+    <form class="auth-card" id="agentLoginForm">
+      <h1 class="auth-title">Agent Login</h1>
+      <p class="auth-desc">Sign in with your agent account.</p>
+
+      <div class="auth-field">
+        <label for="email">Email</label>
+        <input id="email" type="email" required>
+      </div>
+
+      <div class="auth-field">
+        <label for="password">Password</label>
+        <input id="password" type="password" required>
+      </div>
+
+      <button class="auth-btn" type="submit">Sign In</button>
+      <p class="auth-msg" id="authMsg"></p>
+    </form>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="auth.js"></script>
+  <script>
+    const form = document.getElementById("agentLoginForm");
+    const authMsg = document.getElementById("authMsg");
+    
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      authMsg.textContent = "";
+
+      try {
+        await signInUser(
+          document.getElementById("email").value.trim(),
+          document.getElementById("password").value
+        );
+
+        const result = await requireAgent();
+        if (result) window.location.href = "agent-dashboard.html";
+      } catch (error) {
+        authMsg.textContent = error.message || "Login failed.";
+      }
+    });
+  </script>
+</body>
+</html>

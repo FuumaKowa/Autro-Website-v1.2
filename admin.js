@@ -1,6 +1,14 @@
-if (sessionStorage.getItem("autro-admin") !== "true") {
-  window.location.href = "index.html";
-}
+(async function initAdminPage() {
+  const result = await requireAdmin();
+  if (!result) return;
+
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
+    await signOutUser();
+    window.location.href = "admin-login.html";
+  });
+
+  loadCatalog();
+})();
 
 const supabaseUrl = "https://yygbmcvgdvsepdiwsixz.supabase.co";
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5Z2JtY3ZnZHZzZXBkaXdzaXh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NDAyNTgsImV4cCI6MjA5MjQxNjI1OH0.bN3o0WixWBlfZ2-WpfeK1A5zPCUhrcvLot4rxsdoGEc";

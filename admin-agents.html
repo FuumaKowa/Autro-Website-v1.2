@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Agents | Autro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="admin-agents.css">
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <span class="nav-logo-text">AUTRO</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="admin.html">Catalog Admin</a></li>
+      <li><a href="admin-agents.html">Agents</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <button type="button" class="admin-agent-btn" id="logoutBtn">Logout</button>
+    </div>
+  </nav>
+
+  <main class="admin-agents-page">
+    <section class="admin-agents-hero">
+      <div>
+        <p class="admin-agents-kicker">Agent Management</p>
+        <h1 class="admin-agents-title">Agents and Commission Overview</h1>
+        <p class="admin-agents-desc">
+          View all registered agents, their sales count, total customer payments, and earned commissions.
+        </p>
+      </div>
+    </section>
+
+    <section class="admin-agents-layout">
+      <div class="agents-list-card">
+        <div class="admin-agent-head">
+          <h2>Agents</h2>
+          <p>Select an agent to inspect the full sales record.</p>
+        </div>
+
+        <div class="agent-create-card">
+          <h2>Create Agent</h2>
+
+          <form id="createAgentForm">
+            <input placeholder="Full Name" id="agentName" required>
+            <input placeholder="Email" id="agentEmail" required>
+            <input placeholder="Password" id="agentPassword" required>
+            <input placeholder="Phone" id="agentPhone">
+            <input placeholder="Commission %" id="agentRate" type="number" step="0.01" required>
+          
+            <button type="submit">Create Agent</button>
+            <p id="createAgentMsg"></p>
+          </form>
+        </div>
+
+        <div id="agentsList" class="agents-list"></div>
+      </div>
+
+      <div class="agent-detail-card">
+        <div class="admin-agent-head">
+          <h2 id="detailTitle">Agent Details</h2>
+          <p id="detailSubtitle">Choose an agent from the left.</p>
+        </div>
+
+        <div class="agent-detail-stats" id="agentDetailStats" hidden>
+          <article class="agent-detail-stat">
+            <p>Total Commission</p>
+            <h3 id="detailTotalCommission">RM 0.00</h3>
+          </article>
+
+          <article class="agent-detail-stat">
+            <p>Total Sales</p>
+            <h3 id="detailTotalSales">0</h3>
+          </article>
+
+          <article class="agent-detail-stat">
+            <p>Total Revenue</p>
+            <h3 id="detailTotalRevenue">RM 0.00</h3>
+          </article>
+
+          <article class="agent-detail-stat">
+            <p>Rate</p>
+            <h3 id="detailCommissionRate">0%</h3>
+          </article>
+        </div>
+
+        <div class="agent-detail-table-wrap" id="detailTableWrap" hidden>
+          <table class="agent-detail-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Customer</th>
+                <th>Product</th>
+                <th>Months</th>
+                <th>Paid</th>
+                <th>Commission</th>
+              </tr>
+            </thead>
+            <tbody id="detailTableBody"></tbody>
+          </table>
+        </div>
+
+        <p class="agent-detail-empty" id="detailEmpty">No agent selected.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="script.js"></script>
+  <script src="admin-agents.js"></script>
+</body>
+</html>

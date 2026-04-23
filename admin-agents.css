@@ -1,0 +1,201 @@
+.admin-agents-page {
+  padding: 110px 6% 80px;
+  min-height: 100vh;
+  background: var(--paper);
+}
+
+.admin-agents-hero {
+  margin-bottom: 36px;
+}
+
+.admin-agents-kicker {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+}
+
+.admin-agents-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(42px, 5vw, 62px);
+  font-weight: 400;
+  line-height: 1.05;
+  margin-bottom: 16px;
+  color: var(--ink);
+}
+
+.admin-agents-desc {
+  max-width: 620px;
+  font-size: 18px;
+  line-height: 1.8;
+  color: var(--ink-mid);
+}
+
+.admin-agents-layout {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.agents-list-card,
+.agent-detail-card {
+  background: var(--paper);
+  border: 1px solid var(--ink-faint);
+  padding: 28px;
+}
+
+.admin-agent-head {
+  margin-bottom: 22px;
+}
+
+.admin-agent-head h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 30px;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.admin-agent-head p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+
+.admin-agent-btn {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 14px 18px;
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--ink-faint);
+  transition: all 0.3s ease;
+}
+
+.admin-agent-btn:hover {
+  border-color: var(--ink);
+}
+
+.agents-list {
+  display: grid;
+  gap: 14px;
+}
+
+.agent-list-item {
+  border: 1px solid var(--ink-faint);
+  background: var(--paper-2);
+  padding: 16px;
+  cursor: pointer;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.agent-list-item:hover,
+.agent-list-item.active {
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+
+.agent-list-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.agent-list-meta {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 10px;
+}
+
+.agent-list-summary {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--ink-mid);
+}
+
+.agent-detail-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.agent-detail-stat {
+  background: var(--paper-2);
+  border: 1px solid var(--ink-faint);
+  padding: 18px;
+}
+
+.agent-detail-stat p {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.agent-detail-stat h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 30px;
+  font-weight: 400;
+  margin-top: 8px;
+  color: var(--ink);
+}
+
+.agent-detail-table-wrap {
+  overflow-x: auto;
+}
+
+.agent-detail-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.agent-detail-table th,
+.agent-detail-table td {
+  text-align: left;
+  padding: 14px 10px;
+  border-bottom: 1px solid var(--ink-faint);
+  color: var(--ink-mid);
+  font-size: 14px;
+}
+
+.agent-detail-table th {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.agent-detail-empty {
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 1100px) {
+  .admin-agents-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .agent-detail-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .agent-detail-stats {
+    grid-template-columns: 1fr;
+  }
+}

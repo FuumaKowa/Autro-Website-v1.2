@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Agent Dashboard | Autro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="agent-dashboard.css">
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <span class="nav-logo-text">AUTRO</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="furniture.html">Furniture</a></li>
+      <li><a href="agent-dashboard.html">Agent</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <button type="button" class="agent-action-btn" id="logoutBtn">Logout</button>
+    </div>
+  </nav>
+
+  <main class="agent-page">
+    <section class="agent-hero">
+      <div>
+        <p class="agent-kicker">Sales Dashboard</p>
+        <h1 class="agent-title" id="agentNameHeading">Agent Dashboard</h1>
+        <p class="agent-desc">
+          Track sales, commissions, and customer orders linked to your account.
+        </p>
+      </div>
+    </section>
+
+    <!-- <section class="agent-login-card" id="agentLoginCard">
+      <div class="agent-card-head">
+        <h2>Agent Access</h2>
+        <p>Enter your agent email to view your sales.</p>
+      </div>
+
+      <form id="agentLookupForm" class="agent-login-form">
+        <div class="agent-field">
+          <label for="agentEmail">Agent Email</label>
+          <input type="email" id="agentEmail" required>
+        </div>
+
+        <div class="agent-actions">
+          <button type="submit" class="agent-primary-btn">Load Dashboard</button>
+        </div>
+
+        <p class="agent-message" id="agentLookupMessage"></p>
+      </form>
+    </section> -->
+
+    <section class="agent-dashboard" id="agentDashboard" hidden>
+      <div class="agent-stats">
+        <article class="agent-stat-card">
+          <p class="agent-stat-label">Total Commission</p>
+          <h3 id="totalCommission">RM 0.00</h3>
+        </article>
+
+        <article class="agent-stat-card">
+          <p class="agent-stat-label">Total Sales</p>
+          <h3 id="totalSales">0</h3>
+        </article>
+
+        <article class="agent-stat-card">
+          <p class="agent-stat-label">Customer Revenue</p>
+          <h3 id="totalRevenue">RM 0.00</h3>
+        </article>
+
+        <article class="agent-stat-card">
+          <p class="agent-stat-label">Commission Rate</p>
+          <h3 id="commissionRate">0%</h3>
+        </article>
+      </div>
+
+      <div class="agent-table-card">
+        <div class="agent-card-head">
+          <h2>Sales History</h2>
+          <p>All completed requests tied to this agent.</p>
+        </div>
+
+        <div class="agent-table-wrap">
+          <table class="agent-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Customer</th>
+                <th>Product</th>
+                <th>Months</th>
+                <th>Paid</th>
+                <th>Commission</th>
+              </tr>
+            </thead>
+            <tbody id="salesTableBody"></tbody>
+          </table>
+        </div>
+
+        <p class="agent-empty" id="salesEmpty" hidden>No sales found for this agent.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="script.js"></script>
+  <script src="auth.js"></script>
+  <script src="agent-dashboard.js"></script>
+</body>
+</html>

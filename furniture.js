@@ -35,6 +35,14 @@ const summaryMonths = document.getElementById("summaryMonths");
 const summaryMonthly = document.getElementById("summaryMonthly");
 const summaryTotal = document.getElementById("summaryTotal");
 
+const fullNameInput = document.getElementById("fullName");
+const emailAddressInput = document.getElementById("emailAddress");
+const phoneNumberInput = document.getElementById("phoneNumber");
+const rentalStartDateInput = document.getElementById("rentalStartDate");
+const homeAddressInput = document.getElementById("homeAddress");
+const notesInput = document.getElementById("notes");
+const agentCodeInput = document.getElementById("agentCode");
+
 let products = [];
 let activeProduct = null;
 
@@ -64,6 +72,11 @@ function getPricing(product, months) {
   const total = product.price * rate;
   const monthly = total / months;
   return { total, monthly };
+}
+
+function setCheckoutMessage(message, isError = false) {
+  checkoutMessage.textContent = message;
+  checkoutMessage.style.color = isError ? "#9d4a3f" : "";
 }
 
 function updatePanelPricing() {
@@ -128,7 +141,7 @@ function openCheckoutModal() {
   checkoutModal.classList.add("active");
   checkoutOverlay.classList.add("active");
   checkoutModal.setAttribute("aria-hidden", "false");
-  checkoutMessage.textContent = "";
+  setCheckoutMessage("");
   document.body.classList.add("panel-open");
 }
 
@@ -210,6 +223,65 @@ async function loadFurniture() {
   update();
 }
 
+async function findAgentByEmail(email) {
+  if (!email) return null;
+
+  const { data, error } = await supabaseClient
+    .from("agents")
+    .select("*")
+    .eq("email", email)
+    .eq("is_active", true)
+    .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+async function createCustomer(payload) {
+  const { data, error } = await supabaseClient
+    .from("customers")
+    .insert(payload)
+    .select()
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+async function createOrder(payload) {
+  const { data, error } = await supabaseClient
+    .from("orders")
+    .insert(payload)
+    .select()
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+async function createCommission(payload) {
+  const { data, error } = await supabaseClient
+    .from("commissions")
+    .insert(payload)
+    .select()
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
 category.addEventListener("change", update);
 sort.addEventListener("change", update);
 
@@ -231,32 +303,59 @@ checkoutCloseBtn.addEventListener("click", closeCheckoutModal);
 checkoutBackBtn.addEventListener("click", closeCheckoutModal);
 checkoutOverlay.addEventListener("click", closeCheckoutModal);
 
-checkoutForm.addEventListener("submit", (event) => {
+checkoutForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   if (!activeProduct) return;
 
-  const months = Number(rentalPeriod.value);
-  const pricing = getPricing(activeProduct, months);
+  setCheckoutMessage("Submitting...");
 
-  const payload = {
-    productId: activeProduct.id,
-    productName: activeProduct.name,
-    productPrice: activeProduct.price,
-    rentalMonths: months,
-    monthlyPayment: pricing.monthly,
-    totalPayment: pricing.total,
-    fullName: document.getElementById("fullName").value.trim(),
-    emailAddress: document.getElementById("emailAddress").value.trim(),
-    phoneNumber: document.getElementById("phoneNumber").value.trim(),
-    rentalStartDate: document.getElementById("rentalStartDate").value,
-    homeAddress: document.getElementById("homeAddress").value.trim(),
-    notes: document.getElementById("notes").value.trim()
-  };
+  try {
+    const months = Number(rentalPeriod.value);
+    const pricing = getPricing(activeProduct, months);
 
-  localStorage.setItem("autro-rental-request", JSON.stringify(payload));
-  checkoutMessage.textContent = "Request saved locally. Next phase can connect this to email, WhatsApp, or backend checkout.";
-  console.log("AUTRO rental request:", payload);
+    const payload = {
+      full_name: fullNameInput.value.trim(),
+      email: emailAddressInput.value.trim(),
+      phone: phoneNumberInput.value.trim(),
+      address: homeAddressInput.value.trim(),
+      rental_start_date: rentalStartDateInput.value,
+      notes: notesInput.value.trim(),
+      agent_email: agentCodeInput ? agentCodeInput.value.trim() : "",
+      product_id: activeProduct.id,
+      product_name: activeProduct.name,
+      product_price: activeProduct.price,
+      rental_months: months,
+      monthly_payment: pricing.monthly,
+      total_payment: pricing.total
+    };
+
+    const res = await fetch("https://yygbmcvgdvsepdiwsixz.functions.supabase.co/submit-rental-request", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Failed to submit request.");
+    }
+
+    localStorage.setItem("autro-rental-request", JSON.stringify({
+      ...payload,
+      order_id: data.order_id,
+      customer_id: data.customer_id
+    }));
+
+    setCheckoutMessage("Request submitted successfully.");
+    checkoutForm.reset();
+  } catch (error) {
+    console.error("Checkout submit error:", error);
+    setCheckoutMessage(error.message || "Failed to submit request.", true);
+  }
 });
 
 document.addEventListener("keydown", (event) => {

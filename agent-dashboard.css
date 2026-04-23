@@ -1,0 +1,209 @@
+.agent-page {
+  padding: 110px 6% 80px;
+  min-height: 100vh;
+  background: var(--paper);
+}
+
+.agent-hero {
+  margin-bottom: 36px;
+}
+
+.agent-kicker,
+.agent-stat-label {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.agent-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(42px, 5vw, 62px);
+  font-weight: 400;
+  line-height: 1.05;
+  margin: 12px 0 16px;
+  color: var(--ink);
+}
+
+.agent-desc {
+  max-width: 620px;
+  font-size: 18px;
+  line-height: 1.8;
+  color: var(--ink-mid);
+}
+
+.agent-login-card,
+.agent-table-card {
+  background: var(--paper);
+  border: 1px solid var(--ink-faint);
+  padding: 28px;
+}
+
+.agent-card-head {
+  margin-bottom: 22px;
+}
+
+.agent-card-head h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 30px;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.agent-card-head p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+
+.agent-login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 420px;
+}
+
+.agent-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.agent-field label {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.agent-field input {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid var(--ink-faint);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-size: 14px;
+  outline: none;
+}
+
+.agent-field input:focus {
+  border-color: var(--gold);
+}
+
+.agent-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.agent-primary-btn,
+.agent-action-btn {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 14px 18px;
+  transition: all 0.3s ease;
+}
+
+.agent-primary-btn {
+  background: var(--gold);
+  color: var(--white);
+  border: 1px solid var(--gold);
+}
+
+.agent-primary-btn:hover {
+  background: transparent;
+  color: var(--gold);
+}
+
+.agent-action-btn {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--ink-faint);
+}
+
+.agent-action-btn:hover {
+  border-color: var(--ink);
+}
+
+.agent-message {
+  min-height: 22px;
+  font-size: 13px;
+  color: var(--gold);
+}
+
+.agent-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.agent-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.agent-stat-card {
+  background: var(--paper-2);
+  border: 1px solid var(--ink-faint);
+  padding: 22px;
+}
+
+.agent-stat-card h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 34px;
+  font-weight: 400;
+  margin-top: 10px;
+  color: var(--ink);
+}
+
+.agent-table-wrap {
+  overflow-x: auto;
+}
+
+.agent-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.agent-table th,
+.agent-table td {
+  text-align: left;
+  padding: 14px 10px;
+  border-bottom: 1px solid var(--ink-faint);
+  color: var(--ink-mid);
+  font-size: 14px;
+}
+
+.agent-table th {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.agent-empty {
+  font-size: 14px;
+  color: var(--ink-soft);
+  padding-top: 14px;
+}
+
+@media (max-width: 980px) {
+  .agent-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .agent-stats {
+    grid-template-columns: 1fr;
+  }
+}

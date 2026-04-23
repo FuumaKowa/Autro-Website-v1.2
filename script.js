@@ -96,9 +96,8 @@ if (languageSwitcher) {
 const adminTrigger = document.getElementById("adminTrigger");
 
 if (adminTrigger) {
-  adminTrigger.addEventListener("click", (event) => {
-    event.preventDefault();
-    openAdminLogin();
+  adminTrigger.addEventListener("click", () => {
+    window.location.href = "admin-login.html";
   });
 }
 
