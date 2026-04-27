@@ -172,10 +172,10 @@
     </a>
 
     <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="furniture.html">Furniture</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="agent-login.html" style="font-size:12px; letter-spacing:1px;">Agent Login</a></li>
+      <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+      <li><a href="furniture.html" data-i18n="nav.furniture">Furniture</a></li>
+      <li><a href="about.html" data-i18n="nav.about">About</a></li>
+      <li><a href="agent-login.html" style="font-size:12px; letter-spacing:1px;" data-i18n="nav.agent">Agent Login</a></li>
     </ul>
 
     <div class="nav-actions">
@@ -188,10 +188,11 @@
 
   <section class="page-hero">
     <div>
-      <h1 class="page-hero-title">Furniture</h1>
-      <p class="page-hero-desc">
+      <h1 class="page-hero-title" data-i18n="furniture.title">Furniture</h1>
+      <p class="page-hero-desc" data-i18n="furniture.desc">
         Curated pieces to complete your home atmosphere.
       </p>
+
     </div>
 
     <div class="hero-side-image"></div>
@@ -199,21 +200,21 @@
 
   <section class="section-browse">
     <div class="filter-bar">
-      <div class="filter-left">Browse Collection</div>
+      <div class="filter-left" data-i18n="furniture.browse">Browse Collection</div>
 
       <div class="filter-controls">
         <select id="category">
-          <option value="all">All</option>
-          <option value="living">Living Room</option>
-          <option value="bedroom">Bedroom</option>
-          <option value="dining">Dining</option>
-          <option value="decor">Decor</option>
+          <option value="all" data-i18n="furniture.filter.all">All</option>
+          <option value="living" data-i18n="furniture.filter.living">Living Room</option>
+          <option value="bedroom" data-i18n="furniture.filter.bedroom">Bedroom</option>
+          <option value="dining" data-i18n="furniture.filter.dining">Dining</option>
+          <option value="decor" data-i18n="furniture.filter.decor">Decor</option>
         </select>
 
         <select id="sort">
-          <option value="default">Sort</option>
-          <option value="low">Price Low</option>
-          <option value="high">Price High</option>
+          <option value="default" data-i18n="furniture.sort.default">Sort</option>
+          <option value="low" data-i18n="furniture.sort.low">Price Low</option>
+          <option value="high" data-i18n="furniture.sort.high">Price High</option>
         </select>
       </div>
     </div>

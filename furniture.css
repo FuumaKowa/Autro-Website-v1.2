@@ -14,8 +14,8 @@
 .hero-side-image {
   height: 440px;
   background: url("img-furniture/hero-right.jpg") center/cover no-repeat;
-  border: 1px solid var(--ink-faint);
-  position: relative;
+  /* border: 1px solid var(--ink-faint); */
+  position:relative;
   overflow: hidden;
 }
 
