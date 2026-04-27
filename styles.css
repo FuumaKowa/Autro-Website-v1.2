@@ -1159,3 +1159,12 @@ footer {
   opacity: 0.7;
 }
 }
+
+.auth-page {
+  cursor: default;
+}
+
+.auth-page .cursor,
+.auth-page .cursor-ring {
+  display: none;
+}

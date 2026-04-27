@@ -1,17 +1,20 @@
 .admin-agents-page {
-  padding: 110px 6% 80px;
+  padding: 120px 6% 90px;
   min-height: 100vh;
-  background: var(--paper);
+  background:
+    radial-gradient(circle at top left, rgba(184, 146, 58, 0.08), transparent 34%),
+    var(--paper);
 }
 
 .admin-agents-hero {
-  margin-bottom: 36px;
+  margin-bottom: 40px;
+  max-width: 760px;
 }
 
 .admin-agents-kicker {
   font-family: 'Josefin Sans', sans-serif;
   font-size: 11px;
-  letter-spacing: 2px;
+  letter-spacing: 2.4px;
   text-transform: uppercase;
   color: var(--gold);
   margin-bottom: 14px;
@@ -19,7 +22,7 @@
 
 .admin-agents-title {
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(42px, 5vw, 62px);
+  font-size: clamp(44px, 5vw, 68px);
   font-weight: 400;
   line-height: 1.05;
   margin-bottom: 16px;
@@ -27,8 +30,8 @@
 }
 
 .admin-agents-desc {
-  max-width: 620px;
-  font-size: 18px;
+  max-width: 640px;
+  font-size: 17px;
   line-height: 1.8;
   color: var(--ink-mid);
 }
@@ -36,27 +39,31 @@
 .admin-agents-layout {
   display: grid;
   grid-template-columns: 360px 1fr;
-  gap: 28px;
+  gap: 30px;
   align-items: start;
 }
 
 .agents-list-card,
 .agent-detail-card {
-  background: var(--paper);
+  background: rgba(245, 242, 237, 0.82);
   border: 1px solid var(--ink-faint);
-  padding: 28px;
+  padding: 32px;
+  box-shadow: 0 22px 60px rgba(28, 26, 23, 0.06);
+  backdrop-filter: blur(10px);
 }
 
 .admin-agent-head {
   margin-bottom: 22px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(28, 26, 23, 0.1);
 }
 
 .admin-agent-head h2 {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 30px;
+  font-size: 32px;
   font-weight: 400;
   color: var(--ink);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .admin-agent-head p {
@@ -75,13 +82,77 @@
   background: transparent;
   color: var(--ink);
   border: 1px solid var(--ink-faint);
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
 }
 
 .admin-agent-btn:hover {
   border-color: var(--ink);
+  background: rgba(28, 26, 23, 0.04);
 }
 
+/* Create Agent Card */
+.agent-create-card {
+  margin-bottom: 24px;
+  padding: 20px;
+  border: 1px solid var(--ink-faint);
+  background: rgba(250, 248, 245, 0.6);
+}
+
+.agent-create-card h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 400;
+  margin-bottom: 12px;
+  color: var(--ink);
+}
+
+#createAgentForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#createAgentForm input {
+  padding: 12px 14px;
+  border: 1px solid var(--ink-faint);
+  background: rgba(250, 248, 245, 0.7);
+  font-size: 14px;
+  outline: none;
+  transition: all 0.25s ease;
+}
+
+#createAgentForm input:focus {
+  border-color: var(--gold);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(184, 146, 58, 0.08);
+}
+
+#createAgentForm button {
+  margin-top: 6px;
+  padding: 13px;
+  background: var(--gold);
+  color: var(--white);
+  border: 1px solid var(--gold);
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+#createAgentForm button:hover {
+  background: transparent;
+  color: var(--gold);
+}
+
+#createAgentMsg {
+  font-size: 13px;
+  min-height: 18px;
+  color: var(--gold);
+}
+
+/* Agents List */
 .agents-list {
   display: grid;
   gap: 14px;
@@ -89,16 +160,17 @@
 
 .agent-list-item {
   border: 1px solid var(--ink-faint);
-  background: var(--paper-2);
+  background: rgba(250, 248, 245, 0.6);
   padding: 16px;
   cursor: pointer;
-  transition: border-color 0.3s ease, transform 0.3s ease;
+  transition: all 0.25s ease;
 }
 
 .agent-list-item:hover,
 .agent-list-item.active {
   border-color: var(--gold);
   transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(28, 26, 23, 0.05);
 }
 
 .agent-list-name {
@@ -112,10 +184,10 @@
 .agent-list-meta {
   font-family: 'Josefin Sans', sans-serif;
   font-size: 10px;
-  letter-spacing: 1.5px;
+  letter-spacing: 1.6px;
   text-transform: uppercase;
   color: var(--ink-soft);
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .agent-list-summary {
@@ -124,6 +196,7 @@
   color: var(--ink-mid);
 }
 
+/* Detail Section */
 .agent-detail-stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -132,15 +205,20 @@
 }
 
 .agent-detail-stat {
-  background: var(--paper-2);
+  background: rgba(250, 248, 245, 0.6);
   border: 1px solid var(--ink-faint);
   padding: 18px;
+  transition: transform 0.25s ease;
+}
+
+.agent-detail-stat:hover {
+  transform: translateY(-2px);
 }
 
 .agent-detail-stat p {
   font-family: 'Josefin Sans', sans-serif;
   font-size: 10px;
-  letter-spacing: 1.5px;
+  letter-spacing: 1.6px;
   text-transform: uppercase;
   color: var(--ink-soft);
 }
@@ -153,6 +231,7 @@
   color: var(--ink);
 }
 
+/* Table */
 .agent-detail-table-wrap {
   overflow-x: auto;
 }
@@ -184,6 +263,7 @@
   color: var(--ink-soft);
 }
 
+/* Responsive */
 @media (max-width: 1100px) {
   .admin-agents-layout {
     grid-template-columns: 1fr;

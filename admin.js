@@ -10,10 +10,6 @@
   loadCatalog();
 })();
 
-const supabaseUrl = "https://yygbmcvgdvsepdiwsixz.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5Z2JtY3ZnZHZzZXBkaXdzaXh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NDAyNTgsImV4cCI6MjA5MjQxNjI1OH0.bN3o0WixWBlfZ2-WpfeK1A5zPCUhrcvLot4rxsdoGEc";
-const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
-
 const BUCKET_NAME = "furniture-images";
 const TABLE_NAME = "furniture_items";
 
@@ -71,9 +67,9 @@ resetBtn.addEventListener("click", () => {
   setMessage("");
 });
 
-logoutBtn.addEventListener("click", () => {
-  sessionStorage.removeItem("autro-admin");
-  window.location.href = "index.html";
+logoutBtn.addEventListener("click", async () => {
+  await signOutUser();
+  window.location.href = "admin-login.html";
 });
 
 async function loadCatalog() {
