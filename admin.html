@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://unpkg.com/cropperjs@1.6.2/dist/cropper.min.css">
   <link rel="stylesheet" href="admin.css">
 </head>
 <body>
@@ -35,7 +36,7 @@
         <p class="admin-kicker">Catalog Management</p>
         <h1 class="admin-title">Add Furniture Item</h1>
         <p class="admin-desc">
-          Upload an image, fill in the product details, and publish directly to the catalog.
+          Upload an image, crop it to fit the catalog view, then publish the item directly to the furniture collection.
         </p>
       </div>
     </section>
@@ -44,7 +45,7 @@
       <div class="admin-form-card">
         <div class="admin-card-head">
           <h2>New Item</h2>
-          <p>Fields marked required must be filled before publishing.</p>
+          <p>Complete the item details and prepare the image before publishing.</p>
         </div>
 
         <form id="adminForm" class="admin-form">
@@ -79,8 +80,17 @@
           </div>
 
           <div class="admin-preview-wrap">
-            <p class="admin-preview-label">Preview</p>
-            <img id="imagePreview" class="admin-preview-image" alt="Preview" hidden>
+            <p class="admin-preview-label">Crop Preview</p>
+
+            <div class="image-editor" id="imageEditor">
+              <img id="imagePreview" class="admin-preview-image" alt="Image preview" hidden>
+              <p class="image-editor-empty" id="imageEditorEmpty">Choose an image to begin cropping.</p>
+            </div>
+
+            <div class="admin-image-actions">
+              <button type="button" class="admin-secondary-btn" id="cropBtn">Apply Crop</button>
+              <button type="button" class="admin-secondary-btn" id="clearImageBtn">Clear Image</button>
+            </div>
           </div>
 
           <div class="admin-actions">
@@ -103,10 +113,10 @@
     </section>
   </main>
 
+  <script src="https://unpkg.com/cropperjs@1.6.2/dist/cropper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="script.js"></script>
   <script src="auth.js"></script>
   <script src="admin.js"></script>
-  
 </body>
 </html>
