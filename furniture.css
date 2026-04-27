@@ -1,28 +1,49 @@
 .page-hero {
   margin-top: 76px;
-  min-height: 60vh;
+  min-height: 64vh;
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
+  grid-template-columns: 1.05fr 0.95fr;
   align-items: center;
-  padding: 0 8%;
+  gap: 48px;
+  padding: 70px 8%;
+  background:
+    radial-gradient(circle at top left, rgba(184, 146, 58, 0.1), transparent 34%),
+    var(--paper);
 }
 
 .hero-side-image {
-  height: 100%;
+  height: 440px;
   background: url("img-furniture/hero-right.jpg") center/cover no-repeat;
-  border-radius: 6px;
+  border: 1px solid var(--ink-faint);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-side-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to right, var(--paper) 0%, rgba(245, 242, 237, 0.55) 28%, transparent 70%),
+    linear-gradient(to top, var(--paper) 0%, transparent 32%);
 }
 
 .filter-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 40px;
+  gap: 22px;
+  margin-bottom: 42px;
+  padding: 24px;
+  border: 1px solid var(--ink-faint);
+  background: rgba(245, 242, 237, 0.78);
+  backdrop-filter: blur(10px);
 }
 
 .filter-left {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 22px;
+  font-size: 28px;
+  color: var(--ink);
 }
 
 .filter-controls {
@@ -32,95 +53,121 @@
 
 .filter-controls select {
   appearance: none;
-  background: var(--paper);
+  background: rgba(250, 248, 245, 0.85);
   border: 1px solid var(--ink-faint);
-  padding: 10px 30px 10px 14px;
+  padding: 12px 38px 12px 16px;
   font-family: 'Josefin Sans', sans-serif;
-  font-size: 12px;
-  letter-spacing: 1.5px;
+  font-size: 11px;
+  letter-spacing: 1.8px;
   text-transform: uppercase;
   cursor: pointer;
   color: var(--ink);
+  outline: none;
+  transition: border-color 0.25s ease, background 0.25s ease;
+}
+
+.filter-controls select:hover,
+.filter-controls select:focus {
+  border-color: var(--gold);
+  background: var(--white);
 }
 
 .browse-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 28px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 34px;
+  align-items: stretch;
 }
 
 .browse-card {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  height: 100%;
+  min-height: 360px;
+  padding: 14px;
+  border: 1px solid transparent;
+  background: rgba(250, 248, 245, 0.42);
   cursor: pointer;
-}
-
-.browse-card:hover .img-box img {
-  transform: scale(1.05);
-}
-
-.browse-card-title-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.browse-card-action {
-  font-family: 'Josefin Sans', sans-serif;
-  font-size: 10px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--gold);
-  white-space: nowrap;
+  transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease, background 0.28s ease;
 }
 
 .img-box {
-  aspect-ratio: 4 / 3;
+  width: 100%;
+  aspect-ratio: 16 / 10;
   overflow: hidden;
-  background: #eee;
+  background: var(--paper-2);
+  border: 1px solid rgba(28, 26, 23, 0.08);
+  flex-shrink: 0;
 }
 
 .img-box img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.4s ease;
+  object-position: center;
+  display: block;
+  transition: transform 0.45s ease;
+}
+
+.browse-card-title-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 14px;
+  align-items: start;
+  margin-top: 12px;
 }
 
 .browse-card h3 {
-  font-size: 16px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 25px;
   font-weight: 400;
+  line-height: 1.25;
   margin: 0;
+  color: var(--ink);
+}
+
+.browse-card-action {
+  padding-top: 6px;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--gold);
+  white-space: nowrap;
 }
 
 .browse-card p {
+  margin-top: auto;
+  padding-top: 14px;
   font-size: 13px;
   color: var(--ink-soft);
-  margin: 0;
 }
 
 .feature-strip {
-  margin-top: 80px;
-  padding: 60px 8%;
-  background: var(--paper-2);
+  margin-top: 90px;
+  padding: 70px 8%;
+  background:
+    linear-gradient(to bottom, rgba(237, 233, 226, 0.85), var(--paper-2));
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 40px;
+  gap: 1px;
+  border-top: 1px solid var(--ink-faint);
+  border-bottom: 1px solid var(--ink-faint);
 }
 
 .feature-box {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 18px;
-  line-height: 1.6;
+  font-size: 21px;
+  line-height: 1.65;
+  padding: 0 34px;
+  color: var(--ink-mid);
 }
 
 .product-overlay,
 .checkout-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(20, 18, 16, 0.24);
+  background: rgba(20, 18, 16, 0.34);
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -143,8 +190,8 @@
 .product-panel {
   position: fixed;
   top: 0;
-  right: -460px;
-  width: 460px;
+  right: -480px;
+  width: 480px;
   max-width: calc(100vw - 24px);
   height: 100vh;
   background: var(--paper);
@@ -153,6 +200,7 @@
   transition: right 0.4s ease;
   display: flex;
   flex-direction: column;
+  box-shadow: -24px 0 60px rgba(28, 26, 23, 0.12);
 }
 
 .product-panel.active {
@@ -163,7 +211,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24px 24px 18px;
+  padding: 26px 28px 20px;
   border-bottom: 1px solid var(--ink-faint);
 }
 
@@ -171,7 +219,7 @@
 .checkout-modal-meta {
   font-family: 'Josefin Sans', sans-serif;
   font-size: 10px;
-  letter-spacing: 2px;
+  letter-spacing: 2.2px;
   text-transform: uppercase;
   color: var(--ink-soft);
 }
@@ -189,7 +237,7 @@
 }
 
 .product-panel-body {
-  padding: 24px;
+  padding: 28px;
   overflow-y: auto;
   flex: 1;
 }
@@ -197,8 +245,9 @@
 .product-panel-image-wrap {
   aspect-ratio: 4 / 3;
   overflow: hidden;
-  background: #eee;
-  margin-bottom: 22px;
+  background: var(--paper-2);
+  margin-bottom: 24px;
+  border: 1px solid rgba(28, 26, 23, 0.08);
 }
 
 .product-panel-image {
@@ -209,23 +258,23 @@
 
 .product-panel-title {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 32px;
+  font-size: 38px;
   font-weight: 400;
-  line-height: 1.15;
-  margin-bottom: 10px;
+  line-height: 1.12;
+  margin-bottom: 12px;
 }
 
 .product-panel-description {
   font-size: 14px;
   color: var(--ink-soft);
-  line-height: 1.8;
-  margin-bottom: 18px;
+  line-height: 1.85;
+  margin-bottom: 22px;
 }
 
 .product-panel-base {
   font-family: 'Josefin Sans', sans-serif;
-  font-size: 11px;
-  letter-spacing: 2px;
+  font-size: 10px;
+  letter-spacing: 2.2px;
   text-transform: uppercase;
   color: var(--ink-soft);
   margin-bottom: 8px;
@@ -233,13 +282,13 @@
 
 .product-panel-price {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 30px;
+  font-size: 34px;
   font-weight: 400;
-  margin-bottom: 24px;
+  margin-bottom: 26px;
 }
 
 .product-form-group {
-  margin-bottom: 22px;
+  margin-bottom: 24px;
 }
 
 .product-form-label,
@@ -247,7 +296,7 @@
   display: block;
   margin-bottom: 10px;
   font-family: 'Josefin Sans', sans-serif;
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--ink-soft);
@@ -259,12 +308,14 @@
 .checkout-textarea {
   width: 100%;
   appearance: none;
-  background: var(--paper);
+  background: rgba(250, 248, 245, 0.8);
   border: 1px solid var(--ink-faint);
-  padding: 12px 14px;
+  padding: 13px 15px;
   font-family: 'Zen Kaku Gothic New', sans-serif;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--ink);
+  outline: none;
+  transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
 }
 
 .product-form-select {
@@ -280,17 +331,26 @@
   cursor: pointer;
 }
 
+.product-form-select:focus,
+.checkout-input:focus,
+.checkout-select:focus,
+.checkout-textarea:focus {
+  border-color: var(--gold);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(184, 146, 58, 0.08);
+}
+
 .checkout-textarea {
-  min-height: 92px;
+  min-height: 96px;
   resize: vertical;
 }
 
 .product-pricing-box,
 .checkout-summary {
-  background: var(--paper-2);
+  background: rgba(237, 233, 226, 0.72);
   border: 1px solid var(--ink-faint);
-  padding: 18px;
-  margin-bottom: 22px;
+  padding: 20px;
+  margin-bottom: 24px;
 }
 
 .product-pricing-row,
@@ -299,7 +359,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 10px 0;
+  padding: 11px 0;
   border-bottom: 1px solid rgba(28, 26, 23, 0.08);
 }
 
@@ -311,8 +371,8 @@
 .product-pricing-label,
 .checkout-summary-label {
   font-family: 'Josefin Sans', sans-serif;
-  font-size: 11px;
-  letter-spacing: 2px;
+  font-size: 10px;
+  letter-spacing: 1.8px;
   text-transform: uppercase;
   color: var(--ink-soft);
 }
@@ -327,9 +387,9 @@
 .product-ownership-note,
 .checkout-note {
   font-size: 14px;
-  line-height: 1.8;
+  line-height: 1.85;
   color: var(--ink-mid);
-  margin-bottom: 24px;
+  margin-bottom: 26px;
 }
 
 .product-panel-actions,
@@ -353,8 +413,8 @@
   text-transform: uppercase;
   text-decoration: none;
   cursor: pointer;
-  padding: 14px 18px;
-  transition: all 0.3s ease;
+  padding: 14px 20px;
+  transition: all 0.25s ease;
 }
 
 .product-primary-btn,
@@ -381,13 +441,14 @@
 .product-secondary-btn:hover,
 .checkout-secondary-btn:hover {
   border-color: var(--ink);
+  background: rgba(28, 26, 23, 0.03);
 }
 
 .checkout-modal {
   position: fixed;
   top: 50%;
   left: 50%;
-  width: min(860px, calc(100vw - 32px));
+  width: min(920px, calc(100vw - 32px));
   max-height: calc(100vh - 40px);
   background: var(--paper);
   border: 1px solid var(--ink-faint);
@@ -399,6 +460,7 @@
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
   overflow: hidden;
+  box-shadow: 0 30px 80px rgba(28, 26, 23, 0.18);
 }
 
 .checkout-modal.active {
@@ -409,7 +471,7 @@
 
 .checkout-left,
 .checkout-right {
-  padding: 28px;
+  padding: 32px;
   overflow-y: auto;
   max-height: calc(100vh - 40px);
 }
@@ -422,22 +484,22 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
+  margin-bottom: 26px;
 }
 
 .checkout-title {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 34px;
+  font-size: 38px;
   font-weight: 400;
-  line-height: 1.15;
-  margin-bottom: 10px;
+  line-height: 1.12;
+  margin-bottom: 12px;
 }
 
 .checkout-subtitle {
   font-size: 14px;
-  line-height: 1.8;
+  line-height: 1.85;
   color: var(--ink-soft);
-  margin-bottom: 24px;
+  margin-bottom: 26px;
 }
 
 .checkout-grid {
@@ -452,28 +514,31 @@
 
 .checkout-right-title {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 28px;
+  font-size: 30px;
   font-weight: 400;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
 
 .checkout-product-box {
   display: flex;
   gap: 16px;
-  margin-bottom: 22px;
+  margin-bottom: 24px;
+  padding: 14px;
+  border: 1px solid rgba(28, 26, 23, 0.08);
+  background: rgba(250, 248, 245, 0.56);
 }
 
 .checkout-product-thumb {
   width: 112px;
   height: 84px;
   object-fit: cover;
-  background: #eee;
+  background: var(--paper-2);
   flex-shrink: 0;
 }
 
 .checkout-product-name {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 400;
   margin-bottom: 6px;
 }
@@ -491,21 +556,37 @@
   min-height: 20px;
 }
 
+.catalog-empty {
+  grid-column: 1 / -1;
+  padding: 22px;
+  border: 1px dashed var(--ink-faint);
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
 @media (max-width: 1000px) {
   .browse-grid {
-    grid-template-columns: 1fr 1fr;
+     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .page-hero {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 36px;
     min-height: auto;
-    padding-top: 60px;
-    padding-bottom: 40px;
+    padding-top: 70px;
+    padding-bottom: 50px;
+  }
+
+  .hero-side-image {
+    height: 360px;
   }
 
   .feature-strip {
     grid-template-columns: 1fr;
+  }
+
+  .feature-box {
+    padding: 18px 0;
   }
 
   .checkout-modal {
@@ -519,10 +600,17 @@
 }
 
 @media (max-width: 700px) {
+  .page-hero {
+    padding: 60px 6% 42px;
+  }
+
+  .hero-side-image {
+    height: 280px;
+  }
+
   .filter-bar {
     flex-direction: column;
     align-items: flex-start;
-    gap: 18px;
   }
 
   .filter-controls {
@@ -536,6 +624,10 @@
 
   .browse-grid {
     grid-template-columns: 1fr;
+  }
+
+   .browse-card {
+    min-height: auto;
   }
 
   .product-panel {
@@ -555,7 +647,7 @@
 
   .checkout-left,
   .checkout-right {
-    padding: 20px;
+    padding: 22px;
     max-height: none;
   }
 }
