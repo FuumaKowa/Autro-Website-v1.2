@@ -1,7 +1,3 @@
-const supabaseUrl = "https://yygbmcvgdvsepdiwsixz.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5Z2JtY3ZnZHZzZXBkaXdzaXh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NDAyNTgsImV4cCI6MjA5MjQxNjI1OH0.bN3o0WixWBlfZ2-WpfeK1A5zPCUhrcvLot4rxsdoGEc";
-const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
-
 const agentNameHeading = document.getElementById("agentNameHeading");
 const totalCommission = document.getElementById("totalCommission");
 const totalSales = document.getElementById("totalSales");
@@ -27,9 +23,6 @@ async function loadAgentSales(agentId) {
     .eq("agent_id", agentId)
     .order("created_at", { ascending: false });
 
-  console.log("Commissions:", commissions);
-  console.log("Commission error:", commissionError);
-
   if (commissionError) throw commissionError;
   if (!commissions || !commissions.length) return [];
 
@@ -40,26 +33,24 @@ async function loadAgentSales(agentId) {
     .select("*")
     .in("id", orderIds);
 
-  console.log("Orders:", orders);
-  console.log("Order error:", orderError);
-
   if (orderError) throw orderError;
 
-  const customerIds = (orders || []).map((order) => order.customer_id).filter(Boolean);
+  const customerIds = (orders || [])
+    .map((order) => order.customer_id)
+    .filter(Boolean);
 
   const { data: customers, error: customerError } = await supabaseClient
     .from("customers")
     .select("*")
     .in("id", customerIds);
 
-  console.log("Customers:", customers);
-  console.log("Customer error:", customerError);
-
   if (customerError) throw customerError;
 
   return commissions.map((commission) => {
     const order = (orders || []).find((o) => o.id === commission.order_id) || null;
-    const customer = order ? (customers || []).find((c) => c.id === order.customer_id) || null : null;
+    const customer = order
+      ? (customers || []).find((c) => c.id === order.customer_id) || null
+      : null;
 
     return {
       ...commission,
@@ -73,8 +64,15 @@ function renderAgentDashboard(agent, sales) {
   agentNameHeading.textContent = agent.full_name;
   commissionRate.textContent = `${Number(agent.commission_rate || 0).toFixed(2)}%`;
 
-  const totalCommissionValue = sales.reduce((sum, item) => sum + Number(item.commission_amount || 0), 0);
-  const totalRevenueValue = sales.reduce((sum, item) => sum + Number(item.order?.total_payment || 0), 0);
+  const totalCommissionValue = sales.reduce(
+    (sum, item) => sum + Number(item.commission_amount || 0),
+    0
+  );
+
+  const totalRevenueValue = sales.reduce(
+    (sum, item) => sum + Number(item.order?.total_payment || 0),
+    0
+  );
 
   totalCommission.textContent = formatCurrency(totalCommissionValue);
   totalRevenue.textContent = formatCurrency(totalRevenueValue);
@@ -118,9 +116,9 @@ function renderAgentDashboard(agent, sales) {
   try {
     const agent = result.agent;
     const sales = await loadAgentSales(agent.id);
-    console.log("Final sales data:", sales);
+
     renderAgentDashboard(agent, sales);
-    document.getElementById("agentLoginCard")?.remove();
+
     document.getElementById("agentDashboard").hidden = false;
   } catch (error) {
     console.error("Agent dashboard error:", error);
