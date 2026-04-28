@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Packages | Autro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="packages.css">
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <span class="nav-logo-text">AUTRO</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="furniture.html">Furniture</a></li>
+      <li><a href="packages.html" class="active">Packages</a></li>
+    </ul>
+  </nav>
+
+  <main class="packages-page">
+    <section class="packages-hero">
+      <p class="packages-kicker">Curated Bundles</p>
+      <h1 class="packages-title">Furniture Packages</h1>
+      <p class="packages-desc">
+        Discover ready-made furniture sets designed for convenience, style, and value. Each package combines carefully selected items for a complete space.
+      </p>
+    </section>
+
+    <section class="packages-grid-section">
+      <div id="packagesGrid" class="packages-grid"></div>
+      <p id="packagesEmpty" class="packages-empty" hidden>No packages available.</p>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="auth.js"></script>
+  <script src="script.js"></script>
+  <script src="packages.js"></script>
+</body>
+</html>

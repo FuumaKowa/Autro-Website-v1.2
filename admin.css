@@ -120,6 +120,12 @@
   box-shadow: 0 0 0 3px rgba(184, 146, 58, 0.08);
 }
 
+.admin-field-note {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
 .admin-preview-wrap {
   display: flex;
   flex-direction: column;
@@ -202,6 +208,16 @@
   background: rgba(28, 26, 23, 0.03);
 }
 
+.admin-cancel-edit-btn {
+  border-color: rgba(157, 74, 63, 0.45);
+  color: #9d4a3f;
+}
+
+.admin-cancel-edit-btn:hover {
+  border-color: #9d4a3f;
+  background: rgba(157, 74, 63, 0.06);
+}
+
 .admin-message {
   min-height: 22px;
   font-size: 13px;
@@ -216,7 +232,7 @@
 
 .catalog-item {
   display: grid;
-  grid-template-columns: 100px 1fr;
+  grid-template-columns: 110px 1fr;
   gap: 16px;
   align-items: start;
   padding: 16px;
@@ -232,10 +248,14 @@
 }
 
 .catalog-item img {
-  width: 100px;
-  height: 78px;
+  width: 110px;
+  height: 86px;
   object-fit: cover;
   background: var(--paper-2);
+}
+
+.catalog-item-content {
+  min-width: 0;
 }
 
 .catalog-item-title {
@@ -259,6 +279,41 @@
   font-size: 13px;
   line-height: 1.7;
   color: var(--ink-mid);
+  margin-bottom: 14px;
+}
+
+.catalog-item-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.catalog-action-btn {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 10px 13px;
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--ink-faint);
+  transition: all 0.25s ease;
+}
+
+.catalog-action-btn:hover {
+  border-color: var(--ink);
+  background: rgba(28, 26, 23, 0.04);
+}
+
+.catalog-action-btn.danger {
+  color: #9d4a3f;
+  border-color: rgba(157, 74, 63, 0.35);
+}
+
+.catalog-action-btn.danger:hover {
+  border-color: #9d4a3f;
+  background: rgba(157, 74, 63, 0.06);
 }
 
 .catalog-empty {
@@ -289,5 +344,21 @@
 
   .image-editor {
     min-height: 280px;
+  }
+}
+
+@media (max-width: 620px) {
+  .catalog-item {
+    grid-template-columns: 1fr;
+  }
+
+  .catalog-item img {
+    width: 100%;
+    height: 180px;
+  }
+
+  .admin-form-card,
+  .admin-list-card {
+    padding: 24px;
   }
 }

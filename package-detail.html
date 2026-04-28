@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Package Detail | Autro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="package-detail.css">
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <span class="nav-logo-text">AUTRO</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="furniture.html">Furniture</a></li>
+      <li><a href="packages.html" class="active">Packages</a></li>
+    </ul>
+  </nav>
+
+  <main class="package-detail-page">
+    <section id="packageDetail" class="package-detail-wrap">
+      <p class="package-detail-loading">Loading package details...</p>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
+<script src="auth.js"></script>
+<script src="package-detail.js"></script>
+</body>
+</html>

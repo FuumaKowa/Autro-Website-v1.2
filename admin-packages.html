@@ -1,0 +1,131 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Packages | Autro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://unpkg.com/cropperjs@1.6.2/dist/cropper.min.css">
+  <link rel="stylesheet" href="admin-packages.css">
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <span class="nav-logo-text">AUTRO</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="furniture.html">Furniture</a></li>
+      <li><a href="admin.html">Catalog Admin</a></li>
+      <li><a href="admin-packages.html">Packages</a></li>
+      <li><a href="admin-agents.html">Agents</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <button type="button" class="package-logout-btn" id="logoutBtn">Logout</button>
+    </div>
+  </nav>
+
+  <main class="package-admin-page">
+    <section class="package-admin-hero">
+      <p class="package-admin-kicker">Package Management</p>
+      <h1 class="package-admin-title" id="packagePageTitle">Add Furniture Package</h1>
+      <p class="package-admin-desc">
+        Create rental packages by grouping multiple furniture items into one package. You can add, edit, remove, and update package items anytime.
+      </p>
+    </section>
+
+    <section class="package-admin-layout">
+      <div class="package-form-card">
+        <div class="package-card-head">
+          <h2 id="packageFormTitle">New Package</h2>
+          <p id="packageFormDesc">Fill in the package details, upload a package image, then add furniture items using the plus button.</p>
+        </div>
+
+        <form id="packageForm" class="package-form">
+          <input type="hidden" id="editingPackageId">
+
+          <div class="package-field">
+            <label for="packageName">Package Name</label>
+            <input type="text" id="packageName" required>
+          </div>
+
+          <div class="package-field">
+            <label for="packagePrice">Package Price (RM)</label>
+            <input type="number" id="packagePrice" min="0" step="0.01" required>
+          </div>
+
+          <div class="package-field">
+            <label for="packageDescription">Package Description</label>
+            <textarea id="packageDescription" required></textarea>
+          </div>
+
+          <div class="package-field">
+            <label for="packageImage">Package Image</label>
+            <input type="file" id="packageImage" accept="image/*">
+            <small class="package-field-note">
+              Required for new packages. Optional when editing unless you want to replace the package image.
+            </small>
+          </div>
+
+          <div class="package-preview-wrap">
+            <p class="package-preview-label">Package Image Preview</p>
+
+            <div class="package-image-editor" id="packageImageEditor">
+              <img id="packageImagePreview" class="package-preview-image" alt="Package image preview" hidden>
+              <p class="package-image-empty" id="packageImageEmpty">Choose an image to begin cropping.</p>
+            </div>
+
+            <div class="package-image-actions">
+              <button type="button" class="package-secondary-btn" id="packageCropBtn">Apply Crop</button>
+              <button type="button" class="package-secondary-btn" id="packageClearImageBtn">Clear Image</button>
+            </div>
+          </div>
+
+          <div class="package-items-section">
+            <div class="package-items-head">
+              <div>
+                <h2>Furniture Inside Package</h2>
+                <p>Add one or more furniture items into this package.</p>
+              </div>
+
+              <button type="button" class="package-add-item-btn" id="addPackageItemBtn">+ Add Furniture</button>
+            </div>
+
+            <div id="packageItemsContainer" class="package-items-container"></div>
+          </div>
+
+          <div class="package-actions">
+            <button type="submit" class="package-submit-btn" id="packageSubmitBtn">Publish Package</button>
+            <button type="button" class="package-secondary-btn" id="packageResetBtn">Reset</button>
+            <button type="button" class="package-secondary-btn package-cancel-edit-btn" id="packageCancelEditBtn" hidden>Cancel Edit</button>
+          </div>
+
+          <p class="package-message" id="packageMessage"></p>
+        </form>
+      </div>
+
+      <div class="package-list-card">
+        <div class="package-card-head">
+          <h2>Current Packages</h2>
+          <p>Update or delete furniture rental packages from Supabase.</p>
+        </div>
+
+        <div id="packagesList" class="packages-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/cropperjs@1.6.2/dist/cropper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="script.js"></script>
+  <script src="auth.js"></script>
+  <script src="admin-packages.js"></script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+.packages-page {
+  padding: 120px 6% 90px;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(184, 146, 58, 0.08), transparent 34%),
+    var(--paper);
+}
+
+.packages-hero {
+  max-width: 780px;
+  margin-bottom: 48px;
+}
+
+.packages-kicker {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 11px;
+  letter-spacing: 2.4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+}
+
+.packages-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(44px, 5vw, 68px);
+  font-weight: 400;
+  line-height: 1.05;
+  margin-bottom: 16px;
+  color: var(--ink);
+}
+
+.packages-desc {
+  font-size: 17px;
+  line-height: 1.8;
+  color: var(--ink-mid);
+  max-width: 680px;
+}
+
+.packages-grid-section {
+  margin-top: 20px;
+}
+
+.packages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 28px;
+}
+
+.package-card {
+  border: 1px solid rgba(28, 26, 23, 0.14);
+  background: rgba(250, 248, 245, 0.75);
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.package-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--gold);
+  box-shadow: 0 14px 40px rgba(28, 26, 23, 0.08);
+}
+
+.package-card-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  background: var(--paper-2);
+}
+
+.package-card-body {
+  padding: 20px;
+}
+
+.package-card-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.package-card-price {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 11px;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+
+.package-card-desc {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-mid);
+  margin-bottom: 14px;
+}
+
+.package-card-items {
+  font-size: 13px;
+  color: var(--ink-mid);
+  padding-left: 18px;
+  line-height: 1.7;
+}
+
+.package-card-items li {
+  margin-bottom: 4px;
+}
+
+.packages-empty {
+  margin-top: 30px;
+  padding: 20px;
+  border: 1px dashed rgba(28, 26, 23, 0.2);
+  color: var(--ink-soft);
+  font-size: 14px;
+  text-align: center;
+}
+body:not(.homepage) {
+  cursor: auto;
+}
+
+body:not(.homepage) a,
+body:not(.homepage) button {
+  cursor: pointer;
+}
+
+.cursor,
+.cursor-ring {
+  display: none !important;
+}
+
+@media (max-width: 680px) {
+  .packages-page {
+    padding: 100px 6% 70px;
+  }
+
+  .package-card-image {
+    height: 180px;
+  }
+}
