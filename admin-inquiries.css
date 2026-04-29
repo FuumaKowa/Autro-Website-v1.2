@@ -1,0 +1,269 @@
+.admin-inquiries-page {
+  padding: 120px 6% 90px;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(184, 146, 58, 0.08), transparent 34%),
+    var(--paper);
+}
+
+.admin-inquiries-hero {
+  max-width: 780px;
+  margin-bottom: 36px;
+}
+
+.admin-inquiries-kicker {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 11px;
+  letter-spacing: 2.4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+}
+
+.admin-inquiries-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(44px, 5vw, 68px);
+  font-weight: 400;
+  line-height: 1.05;
+  margin-bottom: 16px;
+  color: var(--ink);
+}
+
+.admin-inquiries-desc {
+  max-width: 680px;
+  font-size: 17px;
+  line-height: 1.8;
+  color: var(--ink-mid);
+}
+
+.admin-inquiries-controls {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.admin-inquiries-controls select {
+  min-width: 180px;
+  padding: 13px 15px;
+  border: 1px solid var(--ink-faint);
+  background: rgba(250, 248, 245, 0.82);
+  color: var(--ink);
+  font-size: 14px;
+  outline: none;
+}
+
+.inquiries-list {
+  display: grid;
+  gap: 18px;
+}
+
+.inquiry-card {
+  background: rgba(250, 248, 245, 0.82);
+  border: 1px solid var(--ink-faint);
+  padding: 26px;
+  box-shadow: 0 18px 46px rgba(28, 26, 23, 0.05);
+}
+
+.inquiry-card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-start;
+  padding-bottom: 18px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid rgba(28, 26, 23, 0.1);
+}
+
+.inquiry-customer-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 30px;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.inquiry-meta {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.inquiry-status {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  padding: 8px 12px;
+  border: 1px solid rgba(184, 146, 58, 0.35);
+  color: var(--gold);
+  background: rgba(184, 146, 58, 0.08);
+}
+
+.inquiry-card-body {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px 24px;
+  margin-bottom: 20px;
+}
+
+.inquiry-info-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.inquiry-info-block.full {
+  grid-column: 1 / -1;
+}
+
+.inquiry-info-label {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.inquiry-info-value {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-mid);
+}
+
+.inquiry-actions {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 12px;
+  align-items: center;
+  padding-top: 18px;
+  border-top: 1px solid rgba(28, 26, 23, 0.1);
+}
+
+.inquiry-actions select {
+  width: 100%;
+  padding: 13px 15px;
+  border: 1px solid var(--ink-faint);
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--ink);
+  font-size: 14px;
+  outline: none;
+}
+
+.inquiry-action-btn {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px;
+  letter-spacing: 1.7px;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 13px 16px;
+  border: 1px solid var(--ink-faint);
+  background: transparent;
+  color: var(--ink);
+  transition: all 0.25s ease;
+}
+
+.inquiry-action-btn:hover {
+  border-color: var(--ink);
+  background: rgba(28, 26, 23, 0.03);
+}
+
+.inquiry-action-btn.primary {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--white);
+}
+
+.inquiry-action-btn.primary:hover {
+  background: transparent;
+  color: var(--gold);
+}
+
+.inquiry-action-btn.danger {
+  color: #9d4a3f;
+  border-color: rgba(157, 74, 63, 0.35);
+}
+
+.inquiry-action-btn.danger:hover {
+  border-color: #9d4a3f;
+  background: rgba(157, 74, 63, 0.06);
+}
+
+.inquiry-empty {
+  padding: 24px;
+  border: 1px dashed var(--ink-faint);
+  color: var(--ink-soft);
+  font-size: 14px;
+  text-align: center;
+}
+
+.admin-logout-btn {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 14px 20px;
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--ink-faint);
+  transition: all 0.25s ease;
+}
+
+.admin-logout-btn:hover {
+  border-color: var(--ink);
+  background: rgba(28, 26, 23, 0.03);
+}
+
+.cursor,
+.cursor-ring {
+  display: none !important;
+}
+
+body,
+body * {
+  cursor: auto !important;
+}
+
+a,
+button,
+select {
+  cursor: pointer !important;
+}
+
+@media (max-width: 850px) {
+  .inquiry-card-head {
+    flex-direction: column;
+  }
+
+  .inquiry-card-body {
+    grid-template-columns: 1fr;
+  }
+
+  .inquiry-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .inquiry-action-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 620px) {
+  .admin-inquiries-page {
+    padding: 100px 6% 70px;
+  }
+
+  .inquiry-card {
+    padding: 22px;
+  }
+
+  .admin-inquiries-controls {
+    justify-content: stretch;
+  }
+
+  .admin-inquiries-controls select {
+    width: 100%;
+  }
+}

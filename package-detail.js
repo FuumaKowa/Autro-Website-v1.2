@@ -92,7 +92,9 @@ function renderPackage(pkg) {
         </p>
 
         <div class="package-detail-actions">
-          <a href="#" class="package-detail-btn">Rent Package</a>
+          <a href="inquiry.html?id=${pkg.id}&type=package" class="package-detail-btn">
+            Rent Package
+          </a>
           <a href="packages.html" class="package-detail-btn secondary">Back to Packages</a>
         </div>
       </div>

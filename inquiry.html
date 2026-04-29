@@ -1,0 +1,103 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Rental Inquiry | Autro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="inquiry.css">
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <span class="nav-logo-text">AUTRO</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="furniture.html">Furniture</a></li>
+      <li><a href="packages.html">Packages</a></li>
+    </ul>
+  </nav>
+
+  <main class="inquiry-page">
+    <section class="inquiry-hero">
+      <p class="inquiry-kicker">Rental Request</p>
+      <h1 class="inquiry-title">Submit Your Inquiry</h1>
+      <p class="inquiry-desc">
+        Fill in your contact details and rental information. Our team will review your request and contact you for confirmation.
+      </p>
+    </section>
+
+    <section class="inquiry-layout">
+      <div class="inquiry-summary-card">
+        <div class="inquiry-card-head">
+          <h2>Selected Item</h2>
+          <p>Details are loaded based on the package or furniture you selected.</p>
+        </div>
+
+        <div id="selectedItemBox" class="selected-item-box">
+          <p class="inquiry-empty">Loading selected item...</p>
+        </div>
+      </div>
+
+      <div class="inquiry-form-card">
+        <div class="inquiry-card-head">
+          <h2>Customer Details</h2>
+          <p>Please provide accurate information so the rental team can reach you.</p>
+        </div>
+
+        <form id="inquiryForm" class="inquiry-form">
+          <div class="inquiry-field">
+            <label for="customerName">Full Name</label>
+            <input type="text" id="customerName" required>
+          </div>
+
+          <div class="inquiry-field">
+            <label for="customerPhone">Phone Number</label>
+            <input type="tel" id="customerPhone" required>
+          </div>
+
+          <div class="inquiry-field">
+            <label for="customerEmail">Email</label>
+            <input type="email" id="customerEmail">
+          </div>
+
+          <div class="inquiry-field">
+            <label for="rentalMonths">Rental Duration (Months)</label>
+            <input type="number" id="rentalMonths" min="1" value="1" required>
+          </div>
+
+          <div class="inquiry-field inquiry-field-full">
+            <label for="customerAddress">Delivery Address</label>
+            <textarea id="customerAddress" required></textarea>
+          </div>
+
+          <div class="inquiry-field inquiry-field-full">
+            <label for="customerNotes">Additional Notes</label>
+            <textarea id="customerNotes" placeholder="Preferred delivery date, floor level, special request, etc."></textarea>
+          </div>
+
+          <div class="inquiry-actions">
+            <button type="submit" class="inquiry-submit-btn" id="inquirySubmitBtn">Submit Inquiry</button>
+            <a href="packages.html" class="inquiry-secondary-btn">Back</a>
+          </div>
+
+          <p class="inquiry-message" id="inquiryMessage"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="script.js"></script>
+  <script src="auth.js"></script>
+  <script src="inquiry.js"></script>
+</body>
+</html>
+```
