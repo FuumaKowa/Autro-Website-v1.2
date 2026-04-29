@@ -39,6 +39,36 @@
     </section>
   </main>
 
+  <div class="pkg-overlay" id="pkgOverlay"></div>
+
+<div class="pkg-modal" id="pkgModal">
+  <div class="pkg-modal-header">
+    <h2 id="pkgTitle"></h2>
+    <button id="pkgClose">Close</button>
+  </div>
+
+  <div class="pkg-modal-body">
+    <label>Rental Duration</label>
+    <select id="pkgMonths">
+      <option value="3">3 Months</option>
+      <option value="6">6 Months</option>
+      <option value="12">12 Months</option>
+    </select>
+
+    <div class="pkg-summary">
+      <div>Total: <span id="pkgTotal"></span></div>
+      <div>Monthly: <span id="pkgMonthly"></span></div>
+    </div>
+
+    <input id="pkgName" placeholder="Full Name">
+    <input id="pkgPhone" placeholder="Phone">
+    <input id="pkgEmail" placeholder="Email">
+    <input id="pkgAgent" placeholder="Agent Email (optional)">
+
+    <button id="pkgSubmit">Submit Order</button>
+  </div>
+</div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="auth.js"></script>
   <script src="script.js"></script>
