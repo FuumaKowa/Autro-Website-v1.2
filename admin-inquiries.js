@@ -3,6 +3,8 @@ const statusFilter = document.getElementById("statusFilter");
 const logoutBtn = document.getElementById("logoutBtn");
 
 let agentsCache = [];
+let packagesCache = [];
+let furnitureCache = [];
 
 (async function init() {
   const ok = await requireAdmin();
@@ -15,7 +17,7 @@ let agentsCache = [];
 
   statusFilter.addEventListener("change", loadInquiries);
 
-  await loadAgents();
+  await loadReferenceData();
   await loadInquiries();
 })();
 
@@ -28,12 +30,32 @@ function escapeHtml(val) {
     .replaceAll("'", "&#039;");
 }
 
-async function loadAgents() {
-  const { data } = await supabaseClient
-    .from("agents")
-    .select("*");
+function formatCurrency(value) {
+  return `RM ${Number(value || 0).toFixed(2)}`;
+}
 
-  agentsCache = data || [];
+function formatDate(value) {
+  if (!value) return "-";
+  return new Date(value).toLocaleString("en-MY", {
+    dateStyle: "medium",
+    timeStyle: "short"
+  });
+}
+
+async function loadReferenceData() {
+  const [agentsResult, packagesResult, furnitureResult] = await Promise.all([
+    supabaseClient.from("agents").select("*").order("created_at", { ascending: false }),
+    supabaseClient.from("packages").select("*").order("created_at", { ascending: false }),
+    supabaseClient.from("furniture_items").select("*").order("created_at", { ascending: false })
+  ]);
+
+  if (agentsResult.error) console.error("Agents load error:", agentsResult.error);
+  if (packagesResult.error) console.error("Packages load error:", packagesResult.error);
+  if (furnitureResult.error) console.error("Furniture load error:", furnitureResult.error);
+
+  agentsCache = agentsResult.data || [];
+  packagesCache = packagesResult.data || [];
+  furnitureCache = furnitureResult.data || [];
 }
 
 async function loadInquiries() {
@@ -50,83 +72,141 @@ async function loadInquiries() {
 
   const { data, error } = await query;
 
-  if (error || !data) {
+  if (error) {
+    console.error("Inquiries load error:", error);
     inquiriesList.innerHTML = `<p class="inquiry-empty">Failed to load inquiries.</p>`;
     return;
   }
 
-  if (!data.length) {
+  if (!data || !data.length) {
     inquiriesList.innerHTML = `<p class="inquiry-empty">No inquiries found.</p>`;
     return;
   }
 
-  inquiriesList.innerHTML = data.map(i => renderInquiryCard(i)).join("");
+  inquiriesList.innerHTML = data.map((inquiry) => renderInquiryCard(inquiry)).join("");
 }
 
-function renderInquiryCard(i) {
-    const assignedAgent = agentsCache.find(a => a.id === i.assigned_agent_id);
+function getInquiryItem(inquiry) {
+  if (inquiry.type === "package") {
+    const item = packagesCache.find((pkg) => pkg.id === inquiry.item_id);
+
+    return {
+      name: item?.name || "Unknown package",
+      price: item?.price || 0,
+      description: item?.description || "",
+      image: item?.image_url || "",
+      typeLabel: "Package"
+    };
+  }
+
+  if (inquiry.type === "furniture") {
+    const item = furnitureCache.find((furniture) => furniture.id === inquiry.item_id);
+
+    return {
+      name: item?.name || "Unknown furniture",
+      price: item?.price || 0,
+      description: item?.description || "",
+      image: item?.image_url || "",
+      typeLabel: "Furniture"
+    };
+  }
+
+  return {
+    name: "Unknown item",
+    price: 0,
+    description: "",
+    image: "",
+    typeLabel: "Unknown"
+  };
+}
+
+function renderInquiryCard(inquiry) {
+  const assignedAgent = agentsCache.find((agent) => agent.id === inquiry.assigned_agent_id);
+  const item = getInquiryItem(inquiry);
+
   return `
     <div class="inquiry-card">
       <div class="inquiry-card-head">
         <div>
-          <div class="inquiry-customer-name">${escapeHtml(i.customer_name)}</div>
+          <div class="inquiry-customer-name">${escapeHtml(inquiry.customer_name)}</div>
           <div class="inquiry-meta">
-            ${escapeHtml(i.type)} · ${new Date(i.created_at).toLocaleString()} · Agent: ${escapeHtml(assignedAgent?.full_name || "Not assigned")}
+            Inquiry ID: ${escapeHtml(inquiry.id)}
           </div>
         </div>
 
-        <div class="inquiry-status">${escapeHtml(i.status)}</div>
+        <div class="inquiry-status">${escapeHtml(inquiry.status || "new")}</div>
+      </div>
+
+      <div class="inquiry-selected-item">
+        <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}">
+
+        <div>
+          <div class="inquiry-info-label">Selected ${escapeHtml(item.typeLabel)}</div>
+          <div class="inquiry-selected-title">${escapeHtml(item.name)}</div>
+          <div class="inquiry-selected-price">${formatCurrency(item.price)}</div>
+          <div class="inquiry-selected-desc">${escapeHtml(item.description)}</div>
+        </div>
       </div>
 
       <div class="inquiry-card-body">
         <div class="inquiry-info-block">
+          <div class="inquiry-info-label">Submitted Date</div>
+          <div class="inquiry-info-value">${formatDate(inquiry.created_at)}</div>
+        </div>
+
+        <div class="inquiry-info-block">
+          <div class="inquiry-info-label">Assigned Agent</div>
+          <div class="inquiry-info-value">${escapeHtml(assignedAgent?.full_name || "Not assigned")}</div>
+        </div>
+
+        <div class="inquiry-info-block">
           <div class="inquiry-info-label">Phone</div>
-          <div class="inquiry-info-value">${escapeHtml(i.phone)}</div>
+          <div class="inquiry-info-value">${escapeHtml(inquiry.phone)}</div>
         </div>
 
         <div class="inquiry-info-block">
           <div class="inquiry-info-label">Email</div>
-          <div class="inquiry-info-value">${escapeHtml(i.email || "-")}</div>
+          <div class="inquiry-info-value">${escapeHtml(inquiry.email || "-")}</div>
         </div>
 
         <div class="inquiry-info-block">
-          <div class="inquiry-info-label">Duration</div>
-          <div class="inquiry-info-value">${i.rental_months} month(s)</div>
+          <div class="inquiry-info-label">Rental Duration</div>
+          <div class="inquiry-info-value">${Number(inquiry.rental_months || 1)} month(s)</div>
         </div>
 
         <div class="inquiry-info-block">
-          <div class="inquiry-info-label">Type</div>
-          <div class="inquiry-info-value">${escapeHtml(i.type)}</div>
+          <div class="inquiry-info-label">Inquiry Type</div>
+          <div class="inquiry-info-value">${escapeHtml(item.typeLabel)}</div>
         </div>
 
         <div class="inquiry-info-block full">
-          <div class="inquiry-info-label">Address</div>
-          <div class="inquiry-info-value">${escapeHtml(i.address)}</div>
+          <div class="inquiry-info-label">Delivery Address</div>
+          <div class="inquiry-info-value">${escapeHtml(inquiry.address)}</div>
         </div>
 
         <div class="inquiry-info-block full">
-          <div class="inquiry-info-label">Notes</div>
-          <div class="inquiry-info-value">${escapeHtml(i.notes || "-")}</div>
+          <div class="inquiry-info-label">Customer Notes</div>
+          <div class="inquiry-info-value">${escapeHtml(inquiry.notes || "-")}</div>
         </div>
       </div>
 
       <div class="inquiry-actions">
-        <select onchange="assignAgent('${i.id}', this.value)">
-            <option value="">Assign Agent</option>
-            ${agentsCache.map(a => `
-              <option value="${a.id}" ${i.assigned_agent_id === a.id ? "selected" : ""}>
-                ${escapeHtml(a.full_name)}
-              </option>
-            `).join("")}
+        <select onchange="assignAgent('${inquiry.id}', this.value)">
+          <option value="">Assign Agent</option>
+          ${agentsCache.map((agent) => `
+            <option value="${agent.id}" ${inquiry.assigned_agent_id === agent.id ? "selected" : ""}>
+              ${escapeHtml(agent.full_name)}
+            </option>
+          `).join("")}
         </select>
 
         <button class="inquiry-action-btn primary"
-          onclick="confirmInquiry('${i.id}')">
+          onclick="confirmInquiry('${inquiry.id}')">
           Confirm
         </button>
 
         <button class="inquiry-action-btn danger"
-          onclick="deleteInquiry('${i.id}')">
+          onclick="deleteInquiry('${inquiry.id}')">
           Delete
         </button>
       </div>
@@ -134,19 +214,16 @@ function renderInquiryCard(i) {
   `;
 }
 
-/* ---------- ACTIONS ---------- */
-
 window.assignAgent = async function (id, agentId) {
   if (!agentId) return;
 
-  const { data, error } = await supabaseClient
+  const { error } = await supabaseClient
     .from("inquiries")
     .update({
       assigned_agent_id: agentId,
       status: "assigned"
     })
-    .eq("id", id)
-    .select();
+    .eq("id", id);
 
   if (error) {
     console.error("Assign agent error:", error);
@@ -154,29 +231,39 @@ window.assignAgent = async function (id, agentId) {
     return;
   }
 
-  console.log("Updated inquiry:", data);
-
   await loadInquiries();
 };
 
 window.confirmInquiry = async function (id) {
-  await supabaseClient
+  const { error } = await supabaseClient
     .from("inquiries")
     .update({
       status: "confirmed"
     })
     .eq("id", id);
 
-  loadInquiries();
+  if (error) {
+    console.error("Confirm inquiry error:", error);
+    alert(error.message);
+    return;
+  }
+
+  await loadInquiries();
 };
 
 window.deleteInquiry = async function (id) {
   if (!confirm("Delete this inquiry?")) return;
 
-  await supabaseClient
+  const { error } = await supabaseClient
     .from("inquiries")
     .delete()
     .eq("id", id);
 
-  loadInquiries();
+  if (error) {
+    console.error("Delete inquiry error:", error);
+    alert(error.message);
+    return;
+  }
+
+  await loadInquiries();
 };

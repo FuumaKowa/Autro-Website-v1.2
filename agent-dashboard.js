@@ -7,6 +7,13 @@ const salesTableBody = document.getElementById("salesTableBody");
 const salesEmpty = document.getElementById("salesEmpty");
 const logoutBtn = document.getElementById("logoutBtn");
 
+const agentDashboard = document.getElementById("agentDashboard");
+const agentInquiriesList = document.getElementById("agentInquiriesList");
+const agentInquiriesEmpty = document.getElementById("agentInquiriesEmpty");
+
+let packagesCache = [];
+let furnitureCache = [];
+
 function formatCurrency(value) {
   return `RM ${Number(value || 0).toFixed(2)}`;
 }
@@ -14,6 +21,140 @@ function formatCurrency(value) {
 function formatDate(value) {
   if (!value) return "-";
   return new Date(value).toLocaleDateString("en-MY");
+}
+
+function escapeHtml(value) {
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+async function loadReferenceData() {
+  const [packagesResult, furnitureResult] = await Promise.all([
+    supabaseClient.from("packages").select("*"),
+    supabaseClient.from("furniture_items").select("*")
+  ]);
+
+  packagesCache = packagesResult.data || [];
+  furnitureCache = furnitureResult.data || [];
+}
+
+async function loadAgentInquiries(agentId) {
+  const { data, error } = await supabaseClient
+    .from("inquiries")
+    .select("*")
+    .eq("assigned_agent_id", agentId)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+
+  return data || [];
+}
+
+function getInquiryItem(inquiry) {
+  if (inquiry.type === "package") {
+    const item = packagesCache.find((pkg) => pkg.id === inquiry.item_id);
+
+    return {
+      name: item?.name || "Unknown package",
+      price: item?.price || 0,
+      image: item?.image_url || "",
+      typeLabel: "Package"
+    };
+  }
+
+  if (inquiry.type === "furniture") {
+    const item = furnitureCache.find((furniture) => furniture.id === inquiry.item_id);
+
+    return {
+      name: item?.name || "Unknown furniture",
+      price: item?.price || 0,
+      image: item?.image_url || "",
+      typeLabel: "Furniture"
+    };
+  }
+
+  return {
+    name: "Unknown item",
+    price: 0,
+    image: "",
+    typeLabel: "Unknown"
+  };
+}
+
+function renderAgentInquiries(inquiries) {
+  agentInquiriesList.innerHTML = "";
+
+  if (!inquiries.length) {
+    agentInquiriesEmpty.hidden = false;
+    return;
+  }
+
+  agentInquiriesEmpty.hidden = true;
+
+  agentInquiriesList.innerHTML = inquiries.map((inquiry) => {
+    const item = getInquiryItem(inquiry);
+
+    return `
+      <article class="agent-inquiry-card">
+        <div class="agent-inquiry-head">
+          <div>
+            <div class="agent-inquiry-title">${escapeHtml(inquiry.customer_name)}</div>
+            <div class="agent-inquiry-meta">
+              ${escapeHtml(item.typeLabel)} · ${formatDate(inquiry.created_at)}
+            </div>
+          </div>
+
+          <div class="agent-inquiry-status">${escapeHtml(inquiry.status || "new")}</div>
+        </div>
+
+        <div class="agent-inquiry-body">
+          <div class="agent-inquiry-info">
+            <div class="agent-inquiry-label">Phone</div>
+            <div class="agent-inquiry-value">${escapeHtml(inquiry.phone)}</div>
+          </div>
+
+          <div class="agent-inquiry-info">
+            <div class="agent-inquiry-label">Email</div>
+            <div class="agent-inquiry-value">${escapeHtml(inquiry.email || "-")}</div>
+          </div>
+
+          <div class="agent-inquiry-info">
+            <div class="agent-inquiry-label">Rental Duration</div>
+            <div class="agent-inquiry-value">${Number(inquiry.rental_months || 1)} month(s)</div>
+          </div>
+
+          <div class="agent-inquiry-info">
+            <div class="agent-inquiry-label">Inquiry ID</div>
+            <div class="agent-inquiry-value">${escapeHtml(inquiry.id)}</div>
+          </div>
+
+          <div class="agent-inquiry-info full">
+            <div class="agent-inquiry-label">Address</div>
+            <div class="agent-inquiry-value">${escapeHtml(inquiry.address)}</div>
+          </div>
+
+          <div class="agent-inquiry-info full">
+            <div class="agent-inquiry-label">Notes</div>
+            <div class="agent-inquiry-value">${escapeHtml(inquiry.notes || "-")}</div>
+          </div>
+        </div>
+
+        <div class="agent-inquiry-item">
+          <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}">
+          <div>
+            <div class="agent-inquiry-item-title">${escapeHtml(item.name)}</div>
+            <div class="agent-inquiry-item-meta">
+              ${escapeHtml(item.typeLabel)} · ${formatCurrency(item.price)}
+            </div>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join("");
 }
 
 async function loadAgentSales(agentId) {
@@ -94,8 +235,8 @@ function renderAgentDashboard(agent, sales) {
     salesTableBody.innerHTML += `
       <tr>
         <td>${formatDate(order.created_at || item.created_at)}</td>
-        <td>${customer.full_name || "-"}</td>
-        <td>${order.product_name || "-"}</td>
+        <td>${escapeHtml(customer.full_name || "-")}</td>
+        <td>${escapeHtml(order.product_name || "-")}</td>
         <td>${order.rental_months || "-"}</td>
         <td>${formatCurrency(order.total_payment)}</td>
         <td>${formatCurrency(item.commission_amount)}</td>
@@ -115,11 +256,18 @@ function renderAgentDashboard(agent, sales) {
 
   try {
     const agent = result.agent;
-    const sales = await loadAgentSales(agent.id);
+
+    await loadReferenceData();
+
+    const [sales, inquiries] = await Promise.all([
+      loadAgentSales(agent.id),
+      loadAgentInquiries(agent.id)
+    ]);
 
     renderAgentDashboard(agent, sales);
+    renderAgentInquiries(inquiries);
 
-    document.getElementById("agentDashboard").hidden = false;
+    agentDashboard.hidden = false;
   } catch (error) {
     console.error("Agent dashboard error:", error);
   }

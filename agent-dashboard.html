@@ -18,8 +18,10 @@
     </a>
 
     <ul class="nav-links">
+      <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="furniture.html">Furniture</a></li>
+      <li><a href="packages.html">Packages</a></li>
       <li><a href="agent-dashboard.html">Agent</a></li>
     </ul>
 
@@ -80,6 +82,16 @@
           <p class="agent-stat-label">Commission Rate</p>
           <h3 id="commissionRate">0%</h3>
         </article>
+      </div>
+
+      <div class="agent-inquiries-card">
+        <div class="agent-card-head">
+          <h2>Assigned Inquiries</h2>
+          <p>Customer inquiries currently assigned to you.</p>
+        </div>
+      
+        <div id="agentInquiriesList" class="agent-inquiries-list"></div>
+        <p class="agent-empty" id="agentInquiriesEmpty" hidden>No assigned inquiries found.</p>
       </div>
 
       <div class="agent-table-card">
