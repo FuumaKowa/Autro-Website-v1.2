@@ -227,15 +227,6 @@ archive workflow, and system-generated admin insights.
 
 ````
 
-Copy this into a file named:
-
-```txt
-README.md
-````
-
-Then run:
-
-```bash
 git add README.md
 git commit -m "Add project README"
 git push
