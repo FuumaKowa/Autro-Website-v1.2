@@ -1,4 +1,4 @@
-Yes, but the previous one is too long and too “system documentation” style. For GitHub, use a cleaner README like this.
+
 
 ````md
 # Autro Furniture Rental Website
