@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Rental Archive | Autro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="admin.css" />
+  <link rel="stylesheet" href="admin-archive.css" />
+</head>
+
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <nav>
+    <a href="index.html" class="nav-logo" aria-label="Autro Home">
+      <span class="nav-logo-text">AUTRO</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="admin.html">Catalog</a></li>
+      <li><a href="admin-packages.html">Package Admin</a></li>
+      <li><a href="admin-agents.html">See Agents</a></li>
+      <li><a href="admin-rentals.html">Rentals</a></li>
+      <li><a href="admin-archive.html">Archive</a></li>
+      <li><a href="admin-analysis.html">Data Analysis</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <button type="button" class="admin-logout-btn" id="logoutBtn">Logout</button>
+    </div>
+  </nav>
+
+  <main class="admin-page archive-page">
+    <section class="admin-hero">
+      <div>
+        <p class="admin-kicker">Rental Records</p>
+        <h1 class="admin-title">Rental Archive</h1>
+        <p class="admin-desc">
+          Review completed, ownership-transferred, cancelled, defaulted, and archived rental records without mixing them with active rentals.
+        </p>
+      </div>
+    </section>
+
+    <section class="archive-summary">
+      <div class="archive-summary-card">
+        <p>Archived Records</p>
+        <h2 id="archivedCount">0</h2>
+      </div>
+
+      <div class="archive-summary-card">
+        <p>Ownership Transferred</p>
+        <h2 id="ownershipTransferredCount">0</h2>
+      </div>
+
+      <div class="archive-summary-card">
+        <p>Cancelled</p>
+        <h2 id="cancelledCount">0</h2>
+      </div>
+
+      <div class="archive-summary-card">
+        <p>Defaulted</p>
+        <h2 id="defaultedCount">0</h2>
+      </div>
+
+      <div class="archive-summary-card">
+        <p>Archived Value</p>
+        <h2 id="archivedValue">RM 0.00</h2>
+      </div>
+    </section>
+
+    <section class="archive-toolbar">
+      <div class="archive-search-wrap">
+        <label for="archiveSearch">Search</label>
+        <input type="search" id="archiveSearch" placeholder="Search customer, item, package, or agent..." />
+      </div>
+
+      <div class="archive-filter-wrap">
+        <label for="archiveFilter">Filter</label>
+        <select id="archiveFilter">
+          <option value="all">All Archive Records</option>
+          <option value="ownership_transferred">Ownership Transferred</option>
+          <option value="cancelled">Cancelled</option>
+          <option value="defaulted">Defaulted</option>
+          <option value="archived">Archived</option>
+          <option value="fully_paid">Fully Paid</option>
+          <option value="closed">Closed</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="archive-table-section">
+      <div class="analysis-section-head">
+        <h3>Archived Rental Records</h3>
+        <p>These records are removed from the active rental list but remain available for admin review.</p>
+      </div>
+
+      <div class="archive-table-wrap">
+        <table class="archive-table">
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Rental</th>
+              <th>Final Status</th>
+              <th>Payment Record</th>
+              <th>Ownership</th>
+              <th>Agent</th>
+              <th>Archived</th>
+            </tr>
+          </thead>
+
+          <tbody id="archiveTableBody">
+            <tr>
+              <td colspan="7">Loading archive records...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <p class="archive-message" id="archiveMessage"></p>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="script.js"></script>
+  <script src="auth.js"></script>
+  <script src="admin-archive.js"></script>
+</body>
+</html>

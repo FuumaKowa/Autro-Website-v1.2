@@ -27,7 +27,6 @@ const cardTitle = document.getElementById("cardTitle");
 
 let cropper = null;
 let croppedBlob = null;
-let selectedFile = null;
 
 (async function initAdminPage() {
   const result = await requireAdmin();
@@ -37,6 +36,13 @@ let selectedFile = null;
     await signOutUser();
     window.location.href = "admin-login.html";
   });
+
+  resetBtn.addEventListener("click", resetForm);
+  cancelEditBtn.addEventListener("click", resetForm);
+  clearImageBtn.addEventListener("click", clearImageSelection);
+  cropBtn.addEventListener("click", applyCrop);
+  itemImage.addEventListener("change", handleImageSelection);
+  adminForm.addEventListener("submit", handleSubmit);
 
   await loadCatalog();
 })();
@@ -50,6 +56,15 @@ function formatCurrency(value) {
   return `RM ${Number(value || 0).toFixed(2)}`;
 }
 
+function escapeHtml(value) {
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
 function resetImageEditor() {
   if (cropper) {
     cropper.destroy();
@@ -57,12 +72,17 @@ function resetImageEditor() {
   }
 
   croppedBlob = null;
-  selectedFile = null;
 
   imagePreview.hidden = true;
   imagePreview.removeAttribute("src");
   imagePreview.style.display = "none";
   imageEditorEmpty.style.display = "block";
+}
+
+function clearImageSelection() {
+  itemImage.value = "";
+  resetImageEditor();
+  setMessage("");
 }
 
 function startCropper() {
@@ -73,11 +93,13 @@ function startCropper() {
   cropper = new Cropper(imagePreview, {
     aspectRatio: 4 / 3,
     viewMode: 1,
-    autoCropArea: 1
+    autoCropArea: 1,
+    background: false,
+    responsive: true
   });
 }
 
-itemImage.addEventListener("change", () => {
+function handleImageSelection() {
   const file = itemImage.files?.[0];
 
   if (!file) {
@@ -85,55 +107,69 @@ itemImage.addEventListener("change", () => {
     return;
   }
 
-  selectedFile = file;
+  if (!file.type.startsWith("image/")) {
+    itemImage.value = "";
+    resetImageEditor();
+    setMessage("Please select a valid image file.", true);
+    return;
+  }
+
   croppedBlob = null;
 
   const reader = new FileReader();
-  reader.onload = (e) => {
-    imagePreview.src = e.target.result;
+
+  reader.onload = (event) => {
+    imagePreview.src = event.target.result;
     imagePreview.hidden = false;
     imagePreview.style.display = "block";
     imageEditorEmpty.style.display = "none";
 
-    imagePreview.onload = () => startCropper();
+    imagePreview.onload = () => {
+      startCropper();
+    };
   };
 
   reader.readAsDataURL(file);
-});
+}
 
-cropBtn.addEventListener("click", () => {
+function applyCrop() {
   if (!cropper) {
-    setMessage("Select image first", true);
+    setMessage("Select an image first.", true);
     return;
   }
 
   const canvas = cropper.getCroppedCanvas({
     width: 800,
-    height: 600
+    height: 600,
+    imageSmoothingEnabled: true,
+    imageSmoothingQuality: "high"
   });
 
+  if (!canvas) {
+    setMessage("Unable to crop image.", true);
+    return;
+  }
+
   canvas.toBlob((blob) => {
+    if (!blob) {
+      setMessage("Unable to process cropped image.", true);
+      return;
+    }
+
     croppedBlob = blob;
-    const url = URL.createObjectURL(blob);
+
+    const previewUrl = URL.createObjectURL(blob);
 
     cropper.destroy();
     cropper = null;
 
-    imagePreview.src = url;
-    setMessage("Crop applied");
+    imagePreview.src = previewUrl;
+    imagePreview.hidden = false;
+    imagePreview.style.display = "block";
+
+    setMessage("Crop applied.");
   }, "image/jpeg", 0.9);
-});
-
-clearImageBtn.addEventListener("click", () => {
-  itemImage.value = "";
-  resetImageEditor();
-});
-
-resetBtn.addEventListener("click", resetForm);
-
-cancelEditBtn.addEventListener("click", () => {
-  resetForm();
-});
+}
 
 function resetForm() {
   adminForm.reset();
@@ -149,13 +185,18 @@ function resetForm() {
 }
 
 async function uploadImage() {
-  if (!croppedBlob) throw new Error("Crop image first");
+  if (!croppedBlob) {
+    throw new Error("Crop image first.");
+  }
 
-  const path = `catalog/${Date.now()}.jpg`;
+  const path = `catalog/${Date.now()}-${crypto.randomUUID()}.jpg`;
 
   const { error } = await supabaseClient.storage
     .from(BUCKET_NAME)
-    .upload(path, croppedBlob, { contentType: "image/jpeg" });
+    .upload(path, croppedBlob, {
+      contentType: "image/jpeg",
+      upsert: false
+    });
 
   if (error) throw error;
 
@@ -170,92 +211,131 @@ async function deleteFurniture(id) {
   if (!confirm("Delete this item?")) return;
 
   try {
-    await supabaseClient
+    setMessage("Deleting item...");
+
+    const { error: packageError } = await supabaseClient
       .from("package_items")
       .update({ furniture_id: null })
       .eq("furniture_id", id);
 
-    await supabaseClient
+    if (packageError) throw packageError;
+
+    const { error: deleteError } = await supabaseClient
       .from(TABLE_NAME)
       .delete()
       .eq("id", id);
 
-    setMessage("Item deleted");
-    loadCatalog();
-  } catch (err) {
-    setMessage("Delete failed", true);
+    if (deleteError) throw deleteError;
+
+    setMessage("Item deleted.");
+    await loadCatalog();
+  } catch (error) {
+    console.error("Delete furniture error:", error);
+    setMessage(error.message || "Delete failed.", true);
   }
 }
 
 function startEdit(item) {
+  if (!item) return;
+
+  resetImageEditor();
+
   editingItemId.value = item.id;
+  itemName.value = item.name || "";
+  itemPrice.value = item.price || 0;
+  itemCategory.value = item.category || "living";
+  itemDescription.value = item.description || "";
 
-  itemName.value = item.name;
-  itemPrice.value = item.price;
-  itemCategory.value = item.category;
-  itemDescription.value = item.description;
-
-  imagePreview.src = item.image_url;
-  imagePreview.hidden = false;
-  imagePreview.style.display = "block";
-  imageEditorEmpty.style.display = "none";
+  if (item.image_url) {
+    imagePreview.src = item.image_url;
+    imagePreview.hidden = false;
+    imagePreview.style.display = "block";
+    imageEditorEmpty.style.display = "none";
+  }
 
   submitBtn.textContent = "Update Item";
   formTitle.textContent = "Edit Furniture Item";
   cardTitle.textContent = "Editing Item";
   cancelEditBtn.hidden = false;
 
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  setMessage("Editing item. Upload and crop a new image only if you want to replace the current one.");
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
 }
 
-adminForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
+async function handleSubmit(event) {
+  event.preventDefault();
 
   submitBtn.disabled = true;
 
   try {
-    let imageUrl;
+    const name = itemName.value.trim();
+    const price = Number(itemPrice.value);
+    const category = itemCategory.value;
+    const description = itemDescription.value.trim();
+
+    if (!name) throw new Error("Item name is required.");
+    if (Number.isNaN(price) || price < 0) throw new Error("Enter a valid price.");
+    if (!category) throw new Error("Category is required.");
+    if (!description) throw new Error("Description is required.");
+
+    let imageUrl = null;
 
     if (croppedBlob) {
+      setMessage("Uploading image...");
       imageUrl = await uploadImage();
     }
 
     const payload = {
-      name: itemName.value,
-      price: Number(itemPrice.value),
-      category: itemCategory.value,
-      description: itemDescription.value
+      name,
+      price,
+      category,
+      description
     };
 
-    if (imageUrl) payload.image_url = imageUrl;
+    if (imageUrl) {
+      payload.image_url = imageUrl;
+    }
 
     if (editingItemId.value) {
-      await supabaseClient
+      setMessage("Updating item...");
+
+      const { error } = await supabaseClient
         .from(TABLE_NAME)
         .update(payload)
         .eq("id", editingItemId.value);
 
-      setMessage("Item updated");
+      if (error) throw error;
+
+      setMessage("Item updated.");
     } else {
-      if (!imageUrl) throw new Error("Image required");
+      if (!imageUrl) {
+        throw new Error("Image is required for new items.");
+      }
 
-      payload.image_url = imageUrl;
+      setMessage("Publishing item...");
 
-      await supabaseClient
+      const { error } = await supabaseClient
         .from(TABLE_NAME)
         .insert(payload);
 
-      setMessage("Item added");
+      if (error) throw error;
+
+      setMessage("Item added.");
     }
 
     resetForm();
-    loadCatalog();
-  } catch (err) {
-    setMessage(err.message, true);
+    await loadCatalog();
+  } catch (error) {
+    console.error("Admin form error:", error);
+    setMessage(error.message || "Failed to save item.", true);
+  } finally {
+    submitBtn.disabled = false;
   }
-
-  submitBtn.disabled = false;
-});
+}
 
 async function loadCatalog() {
   const { data, error } = await supabaseClient
@@ -263,24 +343,35 @@ async function loadCatalog() {
     .select("*")
     .order("created_at", { ascending: false });
 
-  if (error || !data) {
-    catalogList.innerHTML = "Failed to load";
+  if (error) {
+    console.error("Catalog load error:", error);
+    catalogList.innerHTML = `<p class="catalog-empty">Failed to load catalog.</p>`;
     return;
   }
 
-  catalogList.innerHTML = data.map(item => `
-    <div class="catalog-item">
-      <img src="${item.image_url}">
-      <div class="catalog-item-content">
-        <div class="catalog-item-title">${item.name}</div>
-        <div class="catalog-item-meta">${item.category} · ${formatCurrency(item.price)}</div>
-        <div class="catalog-item-desc">${item.description}</div>
+  if (!data || !data.length) {
+    catalogList.innerHTML = `<p class="catalog-empty">No furniture items found.</p>`;
+    return;
+  }
 
-        <div class="catalog-item-actions">
-          <button class="catalog-action-btn" onclick='startEdit(${JSON.stringify(item)})'>Edit</button>
-          <button class="catalog-action-btn danger" onclick="deleteFurniture('${item.id}')">Delete</button>
+  catalogList.innerHTML = data.map((item) => {
+    const safeItem = encodeURIComponent(JSON.stringify(item));
+
+    return `
+      <div class="catalog-item">
+        <img src="${escapeHtml(item.image_url || "")}" alt="${escapeHtml(item.name || "Furniture item")}">
+
+        <div class="catalog-item-content">
+          <div class="catalog-item-title">${escapeHtml(item.name)}</div>
+          <div class="catalog-item-meta">${escapeHtml(item.category)} · ${formatCurrency(item.price)}</div>
+          <div class="catalog-item-desc">${escapeHtml(item.description)}</div>
+
+          <div class="catalog-item-actions">
+            <button class="catalog-action-btn" type="button" onclick="startEdit(JSON.parse(decodeURIComponent('${safeItem}')))">Edit</button>
+            <button class="catalog-action-btn danger" type="button" onclick="deleteFurniture('${escapeHtml(item.id)}')">Delete</button>
+          </div>
         </div>
       </div>
-    </div>
-  `).join("");
+    `;
+  }).join("");
 }

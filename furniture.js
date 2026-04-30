@@ -1,7 +1,3 @@
-const supabaseUrl = "https://yygbmcvgdvsepdiwsixz.supabase.co";
-const supabaseKey = "sb_publishable_ebPXA2OwzrR5bIlRsEVNcg_a2R4Dui5";
-const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
-
 const grid = document.getElementById("grid");
 const category = document.getElementById("category");
 const sort = document.getElementById("sort");
@@ -50,10 +46,19 @@ function formatCurrency(value) {
   return `RM ${Number(value || 0).toFixed(2)}`;
 }
 
+function escapeHtml(value) {
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
 function normalizeProduct(row) {
   return {
     id: row.id,
-    name: row.name,
+    name: row.name || "Unnamed Item",
     price: Number(row.price) || 0,
     category: row.category || "living",
     description: row.description || "",
@@ -67,10 +72,14 @@ function normalizeProduct(row) {
 }
 
 function getPricing(product, months) {
-  const rate = product.markupRates[months];
+  const rate = product.markupRates[months] || 1;
   const total = product.price * rate;
   const monthly = total / months;
-  return { total, monthly };
+
+  return {
+    total,
+    monthly
+  };
 }
 
 function setCheckoutMessage(message, isError = false) {
@@ -79,17 +88,23 @@ function setCheckoutMessage(message, isError = false) {
 }
 
 function updatePanelPricing() {
+  if (!activeProduct) return;
+
   const months = Number(rentalPeriod.value);
   const pricing = getPricing(activeProduct, months);
+
   monthlyPayment.textContent = formatCurrency(pricing.monthly);
   totalPayment.textContent = formatCurrency(pricing.total);
 }
 
 function updateCheckoutSummary() {
+  if (!activeProduct) return;
+
   const months = Number(rentalPeriod.value);
   const pricing = getPricing(activeProduct, months);
 
   summaryImage.src = activeProduct.img;
+  summaryImage.alt = activeProduct.name;
   summaryTitle.textContent = activeProduct.name;
   summaryDescription.textContent = activeProduct.description;
   summaryRetail.textContent = formatCurrency(activeProduct.price);
@@ -99,9 +114,12 @@ function updateCheckoutSummary() {
 }
 
 function openProductPanel(productId) {
-  activeProduct = products.find((item) => item.id === productId);
+  activeProduct = products.find((item) => String(item.id) === String(productId));
+
+  if (!activeProduct) return;
 
   panelImage.src = activeProduct.img;
+  panelImage.alt = activeProduct.name;
   panelTitle.textContent = activeProduct.name;
   panelDescription.textContent = activeProduct.description;
   panelBasePrice.textContent = formatCurrency(activeProduct.price);
@@ -111,68 +129,96 @@ function openProductPanel(productId) {
 
   productPanel.classList.add("active");
   productOverlay.classList.add("active");
+  productPanel.setAttribute("aria-hidden", "false");
 }
 
 function closeProductPanel() {
   productPanel.classList.remove("active");
   productOverlay.classList.remove("active");
+  productPanel.setAttribute("aria-hidden", "true");
 }
 
 function openCheckoutModal() {
+  if (!activeProduct) return;
+
   updateCheckoutSummary();
+  setCheckoutMessage("");
+
   checkoutModal.classList.add("active");
   checkoutOverlay.classList.add("active");
+  checkoutModal.setAttribute("aria-hidden", "false");
 }
 
 function closeCheckoutModal() {
   checkoutModal.classList.remove("active");
   checkoutOverlay.classList.remove("active");
+  checkoutModal.setAttribute("aria-hidden", "true");
 }
 
 async function findAgentByEmail(email) {
   if (!email) return null;
 
-  const { data } = await supabaseClient
+  const { data, error } = await supabaseClient
     .from("agents")
-    .select("*")
+    .select("id, email, is_active")
     .eq("email", email)
     .eq("is_active", true)
     .maybeSingle();
+
+  if (error) throw error;
 
   return data;
 }
 
 async function createRentalOrder(payload) {
-  const { data, error } = await supabaseClient
+  const { error } = await supabaseClient
     .from("rental_orders")
-    .insert(payload)
-    .select()
-    .single();
+    .insert(payload);
 
   if (error) throw error;
-  return data;
 }
 
-checkoutForm.addEventListener("submit", async (event) => {
+async function handleCheckoutSubmit(event) {
   event.preventDefault();
 
-  setCheckoutMessage("Submitting...");
+  if (!activeProduct) {
+    setCheckoutMessage("No furniture item selected.", true);
+    return;
+  }
+
+  const customerName = fullNameInput.value.trim();
+  const customerEmail = emailAddressInput.value.trim();
+  const customerPhone = phoneNumberInput.value.trim();
+  const rentalStartDate = rentalStartDateInput.value;
+  const homeAddress = homeAddressInput.value.trim();
+  const notes = notesInput.value.trim();
+  const agentEmail = agentCodeInput.value.trim();
+
+  if (!customerName || !customerPhone || !homeAddress || !rentalStartDate) {
+    setCheckoutMessage("Please complete all required fields.", true);
+    return;
+  }
+
+  const submitButton = checkoutForm.querySelector("button[type='submit']");
+  submitButton.disabled = true;
+  submitButton.textContent = "Submitting...";
 
   try {
+    setCheckoutMessage("Submitting...");
+
     const months = Number(rentalPeriod.value);
     const pricing = getPricing(activeProduct, months);
 
     let agent = null;
-    const agentEmail = agentCodeInput.value.trim();
 
     if (agentEmail) {
       agent = await findAgentByEmail(agentEmail);
     }
 
-    const orderPayload = {
-      customer_name: fullNameInput.value.trim(),
-      customer_email: emailAddressInput.value.trim(),
-      customer_phone: phoneNumberInput.value.trim(),
+    await createRentalOrder({
+      customer_name: customerName,
+      customer_email: customerEmail || null,
+      customer_phone: customerPhone,
       item_type: "furniture",
       item_id: activeProduct.id,
       item_name: activeProduct.name,
@@ -181,42 +227,35 @@ checkoutForm.addEventListener("submit", async (event) => {
       payment_status: "pending",
       agent_id: agent ? agent.id : null,
       agent_code: agentEmail || null,
-      notes: notesInput.value.trim()
-    };
-
-    await createRentalOrder(orderPayload);
+      notes: [
+        rentalStartDate ? `Rental start date: ${rentalStartDate}` : "",
+        homeAddress ? `Address: ${homeAddress}` : "",
+        notes ? `Notes: ${notes}` : ""
+      ].filter(Boolean).join("\n")
+    });
 
     setCheckoutMessage("Order submitted successfully.");
     checkoutForm.reset();
-
   } catch (error) {
-    console.error(error);
-    setCheckoutMessage("Failed to submit order.", true);
+    console.error("Furniture order submit error:", error);
+    setCheckoutMessage(error.message || "Failed to submit order.", true);
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = "Submit Request";
   }
-});
-
-panelCloseBtn.onclick = closeProductPanel;
-panelBackBtn.onclick = closeProductPanel;
-productOverlay.onclick = closeProductPanel;
-
-panelProceedBtn.onclick = openCheckoutModal;
-
-checkoutCloseBtn.onclick = closeCheckoutModal;
-checkoutBackBtn.onclick = closeCheckoutModal;
-checkoutOverlay.onclick = closeCheckoutModal;
-
-rentalPeriod.addEventListener("change", () => {
-  updatePanelPricing();
-  updateCheckoutSummary();
-});
-
-category.addEventListener("change", update);
-sort.addEventListener("change", update);
+}
 
 async function loadFurniture() {
-  const { data } = await supabaseClient
+  const { data, error } = await supabaseClient
     .from("furniture_items")
-    .select("*");
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Furniture load error:", error);
+    grid.innerHTML = `<p class="catalog-empty">Failed to load furniture items.</p>`;
+    return;
+  }
 
   products = (data || []).map(normalizeProduct);
   update();
@@ -230,41 +269,72 @@ function render(list) {
     return;
   }
 
-  list.forEach((product) => {
-    grid.innerHTML += `
-      <article class="browse-card" data-id="${product.id}">
-        <div class="img-box">
-          <img src="${product.img}" alt="${product.name}">
-        </div>
+  grid.innerHTML = list.map((product) => `
+    <article class="browse-card" data-id="${escapeHtml(product.id)}">
+      <div class="img-box">
+        <img src="${escapeHtml(product.img)}" alt="${escapeHtml(product.name)}">
+      </div>
 
-        <div class="browse-card-title-row">
-          <h3>${product.name}</h3>
-          <span class="browse-card-action">View</span>
-        </div>
+      <div class="browse-card-title-row">
+        <h3>${escapeHtml(product.name)}</h3>
+        <span class="browse-card-action">View</span>
+      </div>
 
-        <p>${formatCurrency(product.price)}</p>
-      </article>
-    `;
-  });
-
-  document.querySelectorAll(".browse-card").forEach((card) => {
-    card.addEventListener("click", () => {
-      openProductPanel(card.dataset.id);
-    });
-  });
+      <p>${formatCurrency(product.price)}</p>
+    </article>
+  `).join("");
 }
 
 function update() {
   let filtered = [...products];
 
   if (category.value !== "all") {
-    filtered = filtered.filter(p => p.category === category.value);
+    filtered = filtered.filter((product) => product.category === category.value);
   }
 
-  if (sort.value === "low") filtered.sort((a,b)=>a.price-b.price);
-  if (sort.value === "high") filtered.sort((a,b)=>b.price-a.price);
+  if (sort.value === "low") {
+    filtered.sort((a, b) => a.price - b.price);
+  }
+
+  if (sort.value === "high") {
+    filtered.sort((a, b) => b.price - a.price);
+  }
 
   render(filtered);
 }
+
+grid.addEventListener("click", (event) => {
+  const card = event.target.closest(".browse-card");
+  if (!card) return;
+
+  openProductPanel(card.dataset.id);
+});
+
+checkoutForm.addEventListener("submit", handleCheckoutSubmit);
+
+panelCloseBtn.addEventListener("click", closeProductPanel);
+panelBackBtn.addEventListener("click", closeProductPanel);
+productOverlay.addEventListener("click", closeProductPanel);
+
+panelProceedBtn.addEventListener("click", openCheckoutModal);
+
+checkoutCloseBtn.addEventListener("click", closeCheckoutModal);
+checkoutBackBtn.addEventListener("click", closeCheckoutModal);
+checkoutOverlay.addEventListener("click", closeCheckoutModal);
+
+rentalPeriod.addEventListener("change", () => {
+  updatePanelPricing();
+  updateCheckoutSummary();
+});
+
+category.addEventListener("change", update);
+sort.addEventListener("change", update);
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeProductPanel();
+    closeCheckoutModal();
+  }
+});
 
 loadFurniture();

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Data Analysis | Autro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="admin.css" />
+  <link rel="stylesheet" href="admin-analysis.css" />
+</head>
+
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <nav>
+    <a href="index.html" class="nav-logo" aria-label="Autro Home">
+      <span class="nav-logo-text">AUTRO</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="admin.html">Catalog</a></li>
+      <li><a href="admin-packages.html">Package Admin</a></li>
+      <li><a href="admin-agents.html">See Agents</a></li>
+      <li><a href="admin-rentals.html">Rentals</a></li>
+      <li><a href="admin-archive.html">Archive</a></li>
+      <li><a href="admin-analysis.html">Data Analysis</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <button type="button" class="admin-logout-btn" id="logoutBtn">Logout</button>
+    </div>
+  </nav>
+
+  <main class="admin-page analysis-page">
+    <section class="admin-hero">
+      <div>
+        <p class="admin-kicker">System Intelligence</p>
+        <h1 class="admin-title">Data Analysis</h1>
+        <p class="admin-desc">
+          Review revenue, orders, agent commission, customer activity, and rental performance prepared from the system database.
+        </p>
+      </div>
+    </section>
+
+    <section class="analysis-summary">
+      <div class="analysis-card">
+        <p>Total Revenue</p>
+        <h2 id="totalRevenue">RM 0.00</h2>
+      </div>
+
+      <div class="analysis-card">
+        <p>Total Orders</p>
+        <h2 id="totalOrders">0</h2>
+      </div>
+
+      <div class="analysis-card">
+        <p>Completed Orders</p>
+        <h2 id="completedOrders">0</h2>
+      </div>
+
+      <div class="analysis-card">
+        <p>Pending Orders</p>
+        <h2 id="pendingOrders">0</h2>
+      </div>
+
+      <div class="analysis-card">
+        <p>Total Commission</p>
+        <h2 id="totalCommission">RM 0.00</h2>
+      </div>
+
+      <div class="analysis-card">
+        <p>Average Order Value</p>
+        <h2 id="averageOrderValue">RM 0.00</h2>
+      </div>
+    </section>
+
+    <section class="analysis-highlight-grid">
+      <div class="analysis-highlight-card">
+        <p class="analysis-label">Top Agent</p>
+        <h3 id="topAgentName">-</h3>
+        <span id="topAgentValue">RM 0.00 sales</span>
+      </div>
+
+      <div class="analysis-highlight-card">
+        <p class="analysis-label">Top Item / Package</p>
+        <h3 id="topItemName">-</h3>
+        <span id="topItemValue">0 orders</span>
+      </div>
+
+      <div class="analysis-highlight-card">
+        <p class="analysis-label">Latest Order</p>
+        <h3 id="latestOrderName">-</h3>
+        <span id="latestOrderValue">No order found</span>
+      </div>
+    </section>
+
+    <section class="insight-section">
+      <div class="analysis-section-head">
+        <h3>System Insights & Admin Tips</h3>
+        <p>Automatically generated recommendations based on sales, agents, orders, and product performance.</p>
+      </div>
+
+      <div class="insight-grid" id="insightGrid">
+        <div class="insight-empty">Loading system insights...</div>
+      </div>
+    </section>
+
+    <section class="analysis-grid">
+      <div class="chart-box">
+        <div class="analysis-section-head">
+          <h3>Monthly Revenue</h3>
+          <p>Revenue grouped by order month.</p>
+        </div>
+
+        <div class="chart-wrap">
+          <canvas id="monthlyRevenueChart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-box">
+        <div class="analysis-section-head">
+            <h3>Rental Health</h3>
+            <p>Breakdown of active rental payment conditions.</p>
+        </div>
+
+        <div class="chart-wrap">
+          <canvas id="orderStatusChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <section class="analysis-table-section">
+      <div class="analysis-section-head">
+        <h3>Recent Sales</h3>
+        <p>Latest orders recorded in the system.</p>
+      </div>
+
+      <div class="analysis-table-wrap">
+        <table class="analysis-table">
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Item / Package</th>
+              <th>Agent</th>
+              <th>Payment Health</th>
+              <th>Paid Progress</th>
+              <th>Rental Time</th>
+            </tr>
+          </thead>
+
+          <tbody id="recentSalesTable">
+            <tr>
+              <td colspan="6">Loading analysis data...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <p class="analysis-message" id="analysisMessage"></p>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js"></script>
+  <script src="auth.js"></script>
+  <script src="admin-analysis.js"></script>
+</body>
+</html>

@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Agent Dashboard | Autro</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="agent-dashboard.css">
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="agent-dashboard.css" />
 </head>
+
 <body>
   <div class="cursor" id="cursor"></div>
   <div class="cursor-ring" id="cursorRing"></div>
 
   <nav>
-    <a href="index.html" class="nav-logo">
+    <a href="index.html" class="nav-logo" aria-label="Autro Home">
       <span class="nav-logo-text">AUTRO</span>
     </a>
 
     <ul class="nav-links">
-      <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="furniture.html">Furniture</a></li>
       <li><a href="packages.html">Packages</a></li>
@@ -36,30 +36,10 @@
         <p class="agent-kicker">Sales Dashboard</p>
         <h1 class="agent-title" id="agentNameHeading">Agent Dashboard</h1>
         <p class="agent-desc">
-          Track sales, commissions, and customer orders linked to your account.
+          Track rental orders, customer revenue, and commissions linked to your agent account.
         </p>
       </div>
     </section>
-
-    <!-- <section class="agent-login-card" id="agentLoginCard">
-      <div class="agent-card-head">
-        <h2>Agent Access</h2>
-        <p>Enter your agent email to view your sales.</p>
-      </div>
-
-      <form id="agentLookupForm" class="agent-login-form">
-        <div class="agent-field">
-          <label for="agentEmail">Agent Email</label>
-          <input type="email" id="agentEmail" required>
-        </div>
-
-        <div class="agent-actions">
-          <button type="submit" class="agent-primary-btn">Load Dashboard</button>
-        </div>
-
-        <p class="agent-message" id="agentLookupMessage"></p>
-      </form>
-    </section> -->
 
     <section class="agent-dashboard" id="agentDashboard" hidden>
       <div class="agent-stats">
@@ -87,7 +67,7 @@
       <div class="agent-table-card">
         <div class="agent-card-head">
           <h2>Rental Orders</h2>
-          <p>All rental orders linked to your agent account.</p>
+          <p>All rental orders and commissions linked to your agent account.</p>
         </div>
 
         <div class="agent-table-wrap">

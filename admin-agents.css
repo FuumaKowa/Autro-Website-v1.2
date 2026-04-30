@@ -1,3 +1,13 @@
+.cursor,
+.cursor-ring {
+  display: none !important;
+}
+
+body,
+body * {
+  cursor: auto !important;
+}
+
 .admin-agents-page {
   padding: 120px 6% 90px;
   min-height: 100vh;

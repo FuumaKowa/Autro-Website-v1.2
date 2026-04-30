@@ -1,0 +1,326 @@
+.analysis-page {
+  padding-bottom: 110px;
+}
+
+.analysis-summary {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 18px;
+  margin-bottom: 26px;
+}
+
+.analysis-card,
+.analysis-highlight-card,
+.chart-box,
+.analysis-table-section {
+  background: rgba(245, 242, 237, 0.82);
+  border: 1px solid var(--ink-faint);
+  box-shadow: 0 22px 60px rgba(28, 26, 23, 0.06);
+  backdrop-filter: blur(10px);
+}
+
+.analysis-card {
+  min-height: 138px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.analysis-card p,
+.analysis-label {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.analysis-card h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(28px, 2.4vw, 42px);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--ink);
+  word-break: break-word;
+}
+
+.analysis-highlight-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 26px;
+}
+
+.analysis-highlight-card {
+  min-height: 150px;
+  padding: 26px;
+}
+
+.analysis-highlight-card h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(28px, 3vw, 40px);
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--ink);
+  margin: 16px 0 8px;
+}
+
+.analysis-highlight-card span {
+  display: block;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-mid);
+}
+
+.analysis-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 24px;
+  margin-bottom: 26px;
+}
+
+.chart-box {
+  padding: 30px;
+  min-width: 0;
+}
+
+.analysis-section-head {
+  margin-bottom: 22px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(28, 26, 23, 0.1);
+}
+
+.analysis-section-head h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 34px;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 7px;
+}
+
+.analysis-section-head p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+
+.chart-wrap {
+  position: relative;
+  width: 100%;
+  min-height: 320px;
+}
+
+.chart-wrap canvas {
+  width: 100% !important;
+  max-height: 340px;
+}
+
+.analysis-table-section {
+  padding: 30px;
+}
+
+.analysis-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.analysis-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 820px;
+}
+
+.analysis-table th,
+.analysis-table td {
+  padding: 15px 14px;
+  border-bottom: 1px solid rgba(28, 26, 23, 0.09);
+  text-align: left;
+  vertical-align: top;
+}
+
+.analysis-table th {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  background: rgba(250, 248, 245, 0.65);
+}
+
+.analysis-table td {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-mid);
+}
+
+.analysis-table tbody tr:hover {
+  background: rgba(184, 146, 58, 0.045);
+}
+
+.analysis-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 10px;
+  border: 1px solid rgba(28, 26, 23, 0.12);
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: rgba(250, 248, 245, 0.76);
+}
+
+.analysis-status.completed,
+.analysis-status.paid,
+.analysis-status.approved {
+  border-color: rgba(51, 122, 76, 0.28);
+  color: #337a4c;
+  background: rgba(51, 122, 76, 0.06);
+}
+
+.analysis-status.pending,
+.analysis-status.processing {
+  border-color: rgba(184, 146, 58, 0.34);
+  color: #9c7626;
+  background: rgba(184, 146, 58, 0.08);
+}
+
+.analysis-status.cancelled,
+.analysis-status.rejected,
+.analysis-status.failed {
+  border-color: rgba(157, 74, 63, 0.32);
+  color: #9d4a3f;
+  background: rgba(157, 74, 63, 0.06);
+}
+
+.analysis-message {
+  margin-top: 18px;
+  min-height: 22px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+
+.insight-section {
+  background: rgba(245, 242, 237, 0.82);
+  border: 1px solid var(--ink-faint);
+  box-shadow: 0 22px 60px rgba(28, 26, 23, 0.06);
+  backdrop-filter: blur(10px);
+  padding: 30px;
+  margin-bottom: 26px;
+}
+
+.insight-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.insight-card {
+  border: 1px solid rgba(28, 26, 23, 0.1);
+  background: rgba(250, 248, 245, 0.72);
+  padding: 22px;
+}
+
+.insight-card h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+
+.insight-card p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-mid);
+}
+
+.insight-tag {
+  display: inline-flex;
+  margin-bottom: 14px;
+  padding: 7px 10px;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border: 1px solid rgba(28, 26, 23, 0.12);
+}
+
+.insight-card.success .insight-tag {
+  color: #337a4c;
+  border-color: rgba(51, 122, 76, 0.28);
+  background: rgba(51, 122, 76, 0.06);
+}
+
+.insight-card.warning .insight-tag {
+  color: #9c7626;
+  border-color: rgba(184, 146, 58, 0.34);
+  background: rgba(184, 146, 58, 0.08);
+}
+
+.insight-card.danger .insight-tag {
+  color: #9d4a3f;
+  border-color: rgba(157, 74, 63, 0.32);
+  background: rgba(157, 74, 63, 0.06);
+}
+
+.insight-card.info .insight-tag {
+  color: var(--ink);
+  border-color: rgba(28, 26, 23, 0.14);
+  background: rgba(28, 26, 23, 0.03);
+}
+
+.insight-empty {
+  grid-column: 1 / -1;
+  padding: 22px;
+  border: 1px dashed var(--ink-faint);
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
+@media (max-width: 980px) {
+  .insight-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1320px) {
+  .analysis-summary {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 980px) {
+  .analysis-summary,
+  .analysis-highlight-grid,
+  .analysis-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-wrap {
+    min-height: 280px;
+  }
+}
+
+@media (max-width: 620px) {
+  .analysis-card,
+  .analysis-highlight-card,
+  .chart-box,
+  .analysis-table-section {
+    padding: 24px;
+  }
+
+  .analysis-card {
+    min-height: 120px;
+  }
+
+  .analysis-section-head h3 {
+    font-size: 30px;
+  }
+
+  .chart-wrap {
+    min-height: 240px;
+  }
+}

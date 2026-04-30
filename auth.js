@@ -1,30 +1,44 @@
 const supabaseUrl = "https://yygbmcvgdvsepdiwsixz.supabase.co";
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5Z2JtY3ZnZHZzZXBkaXdzaXh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NDAyNTgsImV4cCI6MjA5MjQxNjI1OH0.bN3o0WixWBlfZ2-WpfeK1A5zPCUhrcvLot4rxsdoGEc";
+
 const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 async function signInUser(email, password) {
+  const cleanEmail = String(email || "").trim();
+
+  if (!cleanEmail || !password) {
+    throw new Error("Email and password are required.");
+  }
+
   const { data, error } = await supabaseClient.auth.signInWithPassword({
-    email,
+    email: cleanEmail,
     password
   });
 
   if (error) throw error;
+
   return data;
 }
 
 async function signOutUser() {
   const { error } = await supabaseClient.auth.signOut();
+
   if (error) throw error;
 }
 
 async function getCurrentUser() {
   const { data, error } = await supabaseClient.auth.getUser();
-  if (error) throw error;
-  return data.user;
+
+  if (error) {
+    return null;
+  }
+
+  return data.user || null;
 }
 
 async function requireAdmin() {
   const user = await getCurrentUser();
+
   if (!user) {
     window.location.href = "admin-login.html";
     return null;
@@ -37,15 +51,20 @@ async function requireAdmin() {
     .maybeSingle();
 
   if (error || !data) {
+    await signOutUser().catch(() => {});
     window.location.href = "admin-login.html";
     return null;
   }
 
-  return { user, admin: data };
+  return {
+    user,
+    admin: data
+  };
 }
 
 async function requireAgent() {
   const user = await getCurrentUser();
+
   if (!user) {
     window.location.href = "agent-login.html";
     return null;
@@ -59,9 +78,13 @@ async function requireAgent() {
     .maybeSingle();
 
   if (error || !data) {
+    await signOutUser().catch(() => {});
     window.location.href = "agent-login.html";
     return null;
   }
 
-  return { user, agent: data };
+  return {
+    user,
+    agent: data
+  };
 }

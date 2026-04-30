@@ -1,114 +1,131 @@
-const cursor = document.getElementById('cursor');
-const ring = document.getElementById('cursorRing');
-const languageSwitcher = document.getElementById('languageSwitcher');
+const cursor = document.getElementById("cursor");
+const cursorRing = document.getElementById("cursorRing");
+const languageSwitcher = document.getElementById("languageSwitcher");
+const adminTrigger = document.getElementById("adminTrigger");
 
-let mx = 0;
-let my = 0;
-let rx = 0;
-let ry = 0;
+const isDesktop = window.innerWidth > 900;
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-if (window.innerWidth > 900) {
-  document.addEventListener('mousemove', (e) => {
-    mx = e.clientX;
-    my = e.clientY;
+let mouseX = 0;
+let mouseY = 0;
+let ringX = 0;
+let ringY = 0;
 
-    if (cursor) {
-      cursor.style.left = `${mx}px`;
-      cursor.style.top = `${my}px`;
-    }
+function initCursor() {
+  if (!isDesktop || !cursor || !cursorRing) return;
+
+  document.addEventListener("mousemove", (event) => {
+    mouseX = event.clientX;
+    mouseY = event.clientY;
+
+    cursor.style.left = `${mouseX}px`;
+    cursor.style.top = `${mouseY}px`;
   });
 
-  function animateRing() {
-    rx += (mx - rx) * 0.1;
-    ry += (my - ry) * 0.1;
+  function animateCursorRing() {
+    ringX += (mouseX - ringX) * 0.1;
+    ringY += (mouseY - ringY) * 0.1;
 
-    if (ring) {
-      ring.style.left = `${rx}px`;
-      ring.style.top = `${ry}px`;
-    }
+    cursorRing.style.left = `${ringX}px`;
+    cursorRing.style.top = `${ringY}px`;
 
-    requestAnimationFrame(animateRing);
+    requestAnimationFrame(animateCursorRing);
   }
 
-  animateRing();
+  animateCursorRing();
 
-  document.querySelectorAll('a, button, select').forEach((el) => {
-    el.addEventListener('mouseenter', () => {
-      if (cursor) cursor.style.transform = 'translate(-50%, -50%) scale(2.5)';
-      if (ring) ring.style.opacity = '0';
+  document.querySelectorAll("a, button, select, input, textarea").forEach((element) => {
+    element.addEventListener("mouseenter", () => {
+      cursor.style.transform = "translate(-50%, -50%) scale(2.5)";
+      cursorRing.style.opacity = "0";
     });
 
-    el.addEventListener('mouseleave', () => {
-      if (cursor) cursor.style.transform = 'translate(-50%, -50%) scale(1)';
-      if (ring) ring.style.opacity = '1';
+    element.addEventListener("mouseleave", () => {
+      cursor.style.transform = "translate(-50%, -50%) scale(1)";
+      cursorRing.style.opacity = "1";
     });
   });
 }
 
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach((entry) => {
-    if (entry.isIntersecting) {
-      entry.target.style.opacity = '1';
-      entry.target.style.transform = 'translateY(0)';
-    }
+function initScrollAnimations() {
+  if (prefersReducedMotion || !("IntersectionObserver" in window)) return;
+
+  const animatedElements = document.querySelectorAll(
+    ".why-card, .plan-card, .info-card, .vip-text, .testimonial-kicker, blockquote, .dual-copy, .content-copy"
+  );
+
+  if (!animatedElements.length) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+
+      entry.target.style.opacity = "1";
+      entry.target.style.transform = "translateY(0)";
+      observer.unobserve(entry.target);
+    });
+  }, {
+    threshold: 0.12
   });
-}, { threshold: 0.12 });
 
-document.querySelectorAll('.why-card, .plan-card, .info-card, .vip-text, .testimonial-kicker, blockquote, .dual-copy, .content-copy').forEach((el) => {
-  el.style.opacity = '0';
-  el.style.transform = 'translateY(20px)';
-  el.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
-  observer.observe(el);
-});
+  animatedElements.forEach((element) => {
+    element.style.opacity = "0";
+    element.style.transform = "translateY(20px)";
+    element.style.transition = "opacity 0.7s ease, transform 0.7s ease";
+    observer.observe(element);
+  });
+}
 
-function applyTranslations(lang) {
-  document.documentElement.lang = lang;
-  const dictionary = window.translations?.[lang];
+function applyTranslations(language) {
+  const dictionary = window.translations?.[language];
   if (!dictionary) return;
 
-  document.querySelectorAll('[data-i18n]').forEach((element) => {
-    const key = element.getAttribute('data-i18n');
+  document.documentElement.lang = language;
+
+  document.querySelectorAll("[data-i18n]").forEach((element) => {
+    const key = element.getAttribute("data-i18n");
+
     if (dictionary[key] !== undefined) {
       element.textContent = dictionary[key];
     }
   });
 
-  document.querySelectorAll('[data-i18n-placeholder]').forEach((element) => {
-    const key = element.getAttribute('data-i18n-placeholder');
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
+    const key = element.getAttribute("data-i18n-placeholder");
+
     if (dictionary[key] !== undefined) {
-      element.setAttribute('placeholder', dictionary[key]);
+      element.setAttribute("placeholder", dictionary[key]);
     }
   });
 
-  localStorage.setItem('autro-language', lang);
+  localStorage.setItem("autro-language", language);
 }
 
-const savedLanguage = localStorage.getItem('autro-language') || 'en';
-applyTranslations(savedLanguage);
+function initLanguageSwitcher() {
+  const savedLanguage = localStorage.getItem("autro-language") || "en";
 
-if (languageSwitcher) {
+  applyTranslations(savedLanguage);
+
+  if (!languageSwitcher) return;
+
   languageSwitcher.value = savedLanguage;
-  languageSwitcher.addEventListener('change', (event) => {
+
+  languageSwitcher.addEventListener("change", (event) => {
     applyTranslations(event.target.value);
   });
 }
 
-const adminTrigger = document.getElementById("adminTrigger");
+function initAdminTrigger() {
+  if (!adminTrigger) return;
 
-if (adminTrigger) {
   adminTrigger.addEventListener("click", () => {
     window.location.href = "admin-login.html";
   });
 }
 
-function openAdminLogin() {
-  const user = prompt("Admin Username:");
-  const pass = prompt("Admin Password:");
+window.applyTranslations = applyTranslations;
 
-  if (user === "admin" && pass === "1234") {
-    sessionStorage.setItem("autro-admin", "true");
-    window.location.href = "admin.html";
-  } else if (user !== null && pass !== null) {
-    alert("Access denied");
-  }
-}
+initCursor();
+initScrollAnimations();
+initLanguageSwitcher();
+initAdminTrigger();

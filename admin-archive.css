@@ -1,0 +1,227 @@
+.archive-page {
+  padding-bottom: 110px;
+}
+
+.archive-summary {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 18px;
+  margin-bottom: 26px;
+}
+
+.archive-summary-card,
+.archive-toolbar,
+.archive-table-section {
+  background: rgba(245, 242, 237, 0.82);
+  border: 1px solid var(--ink-faint);
+  box-shadow: 0 22px 60px rgba(28, 26, 23, 0.06);
+  backdrop-filter: blur(10px);
+}
+
+.archive-summary-card {
+  min-height: 130px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.archive-summary-card p {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.archive-summary-card h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(30px, 3vw, 46px);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.archive-toolbar {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 18px;
+  padding: 24px;
+  margin-bottom: 26px;
+}
+
+.archive-search-wrap,
+.archive-filter-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.archive-search-wrap label,
+.archive-filter-wrap label {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.archive-search-wrap input,
+.archive-filter-wrap select {
+  width: 100%;
+  padding: 14px 15px;
+  border: 1px solid var(--ink-faint);
+  background: rgba(250, 248, 245, 0.72);
+  color: var(--ink);
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.archive-search-wrap input:focus,
+.archive-filter-wrap select:focus {
+  border-color: var(--gold);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(184, 146, 58, 0.08);
+}
+
+.archive-table-section {
+  padding: 30px;
+}
+
+.archive-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.archive-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1120px;
+}
+
+.archive-table th,
+.archive-table td {
+  padding: 15px 14px;
+  border-bottom: 1px solid rgba(28, 26, 23, 0.09);
+  text-align: left;
+  vertical-align: top;
+}
+
+.archive-table th {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  background: rgba(250, 248, 245, 0.65);
+}
+
+.archive-table td {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-mid);
+}
+
+.archive-table tbody tr:hover {
+  background: rgba(184, 146, 58, 0.045);
+}
+
+.archive-primary-text {
+  display: block;
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.archive-secondary-text {
+  display: block;
+  margin-top: 3px;
+  color: var(--ink-soft);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.archive-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 10px;
+  border: 1px solid rgba(28, 26, 23, 0.12);
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: rgba(250, 248, 245, 0.76);
+}
+
+.archive-status.fully_paid,
+.archive-status.ownership_transferred {
+  border-color: rgba(51, 122, 76, 0.28);
+  color: #337a4c;
+  background: rgba(51, 122, 76, 0.06);
+}
+
+.archive-status.archived,
+.archive-status.closed {
+  border-color: rgba(28, 26, 23, 0.16);
+  color: var(--ink);
+  background: rgba(28, 26, 23, 0.04);
+}
+
+.archive-status.cancelled,
+.archive-status.defaulted,
+.archive-status.behind_schedule,
+.archive-status.overdue {
+  border-color: rgba(157, 74, 63, 0.32);
+  color: #9d4a3f;
+  background: rgba(157, 74, 63, 0.06);
+}
+
+.archive-payment-box {
+  min-width: 160px;
+}
+
+.archive-progress-bar {
+  width: 100%;
+  height: 8px;
+  margin-top: 8px;
+  background: rgba(28, 26, 23, 0.08);
+  overflow: hidden;
+}
+
+.archive-progress-fill {
+  height: 100%;
+  width: 0;
+  background: var(--gold);
+}
+
+.archive-message {
+  margin-top: 18px;
+  min-height: 22px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 1180px) {
+  .archive-summary {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .archive-toolbar {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .archive-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .archive-table-section,
+  .archive-toolbar {
+    padding: 24px;
+  }
+}

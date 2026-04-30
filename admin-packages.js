@@ -29,8 +29,8 @@ let packageItems = [];
 let furnitureCache = [];
 
 (async function initPackageAdmin() {
-  const ok = await requireAdmin();
-  if (!ok) return;
+  const result = await requireAdmin();
+  if (!result) return;
 
   logoutBtn.addEventListener("click", async () => {
     await signOutUser();
@@ -40,13 +40,18 @@ let furnitureCache = [];
   addPackageItemBtn.addEventListener("click", addItem);
   packageResetBtn.addEventListener("click", resetForm);
   packageCancelEditBtn.addEventListener("click", resetForm);
+  packageImage.addEventListener("change", handleImageSelection);
+  packageCropBtn.addEventListener("click", applyCrop);
+  packageClearImageBtn.addEventListener("click", clearImageSelection);
+  packageForm.addEventListener("submit", handlePackageSubmit);
 
   await loadFurniture();
   await loadPackages();
+
   renderItems();
 })();
 
-function setMsg(message, isError = false) {
+function setMessage(message, isError = false) {
   packageMessage.textContent = message;
   packageMessage.style.color = isError ? "#9d4a3f" : "";
 }
@@ -75,10 +80,16 @@ function resetImageEditor() {
 
   packageImagePreview.hidden = true;
   packageImagePreview.removeAttribute("src");
+  packageImagePreview.style.display = "none";
   packageImageEmpty.style.display = "block";
 }
 
-packageImage.addEventListener("change", () => {
+function clearImageSelection() {
+  resetImageEditor();
+  setMessage("");
+}
+
+function handleImageSelection() {
   const file = packageImage.files?.[0];
 
   if (!file) {
@@ -87,7 +98,7 @@ packageImage.addEventListener("change", () => {
   }
 
   if (!file.type.startsWith("image/")) {
-    setMsg("Please upload a valid image file.", true);
+    setMessage("Please upload a valid image file.", true);
     resetImageEditor();
     return;
   }
@@ -99,31 +110,38 @@ packageImage.addEventListener("change", () => {
   reader.onload = (event) => {
     packageImagePreview.src = event.target.result;
     packageImagePreview.hidden = false;
+    packageImagePreview.style.display = "block";
     packageImageEmpty.style.display = "none";
 
     packageImagePreview.onload = () => {
-      if (cropper) cropper.destroy();
-
-      cropper = new Cropper(packageImagePreview, {
-        aspectRatio: 4 / 3,
-        viewMode: 1,
-        autoCropArea: 1,
-        responsive: true,
-        background: false,
-        movable: true,
-        zoomable: true,
-        scalable: true,
-        cropBoxResizable: true
-      });
+      startCropper();
     };
   };
 
   reader.readAsDataURL(file);
-});
+}
 
-packageCropBtn.addEventListener("click", () => {
+function startCropper() {
+  if (cropper) {
+    cropper.destroy();
+  }
+
+  cropper = new Cropper(packageImagePreview, {
+    aspectRatio: 4 / 3,
+    viewMode: 1,
+    autoCropArea: 1,
+    responsive: true,
+    background: false,
+    movable: true,
+    zoomable: true,
+    scalable: true,
+    cropBoxResizable: true
+  });
+}
+
+function applyCrop() {
   if (!cropper) {
-    setMsg("Select an image first.", true);
+    setMessage("Select an image first.", true);
     return;
   }
 
@@ -134,9 +152,14 @@ packageCropBtn.addEventListener("click", () => {
     imageSmoothingQuality: "high"
   });
 
+  if (!canvas) {
+    setMessage("Unable to crop image.", true);
+    return;
+  }
+
   canvas.toBlob((blob) => {
     if (!blob) {
-      setMsg("Failed to crop image.", true);
+      setMessage("Failed to crop image.", true);
       return;
     }
 
@@ -149,16 +172,12 @@ packageCropBtn.addEventListener("click", () => {
 
     packageImagePreview.src = croppedUrl;
     packageImagePreview.hidden = false;
+    packageImagePreview.style.display = "block";
     packageImageEmpty.style.display = "none";
 
-    setMsg("Crop applied.");
+    setMessage("Crop applied.");
   }, "image/jpeg", 0.9);
-});
-
-packageClearImageBtn.addEventListener("click", () => {
-  resetImageEditor();
-  setMsg("");
-});
+}
 
 function addItem() {
   packageItems.push({
@@ -171,12 +190,12 @@ function addItem() {
   renderItems();
 }
 
-window.removeItem = function removeItem(index) {
+function removeItem(index) {
   packageItems.splice(index, 1);
   renderItems();
-};
+}
 
-window.updateItem = function updateItem(index, field, value) {
+function updateItem(index, field, value) {
   if (!packageItems[index]) return;
 
   if (field === "quantity") {
@@ -190,7 +209,7 @@ window.updateItem = function updateItem(index, field, value) {
   }
 
   packageItems[index][field] = value;
-};
+}
 
 function renderItems() {
   if (!packageItems.length) {
@@ -220,11 +239,12 @@ function renderItems() {
         <div class="package-item-grid">
           <div class="package-item-field">
             <label>Select Furniture <span>*</span></label>
-            <p class="package-item-help">Choose from existing catalog</p>
+            <p class="package-item-help">Choose from existing catalog.</p>
+
             <select onchange="updateItem(${index}, 'furniture_id', this.value)" required>
               <option value="">Select Furniture</option>
               ${furnitureCache.map((furniture) => `
-                <option value="${furniture.id}" ${furniture.id === item.furniture_id ? "selected" : ""}>
+                <option value="${escapeHtml(furniture.id)}" ${String(furniture.id) === String(item.furniture_id) ? "selected" : ""}>
                   ${escapeHtml(furniture.name)}
                 </option>
               `).join("")}
@@ -233,29 +253,45 @@ function renderItems() {
 
           <div class="package-item-field">
             <label>Quantity <span>*</span></label>
-            <p class="package-item-help">How many units of this item</p>
-            <input type="number" min="1" value="${item.quantity || 1}"
-              onchange="updateItem(${index}, 'quantity', this.value)" required>
+            <p class="package-item-help">How many units of this item.</p>
+
+            <input
+              type="number"
+              min="1"
+              value="${Number(item.quantity || 1)}"
+              onchange="updateItem(${index}, 'quantity', this.value)"
+              required
+            >
           </div>
 
           <div class="package-item-field package-item-full">
             <label>Custom Name <small>(Optional)</small></label>
             <p class="package-item-help">
-              Enter a custom name for this item. Leave blank to use the selected furniture name.
+              Leave blank to use the selected furniture name.
             </p>
-            <input type="text" placeholder="e.g. Living Room Chair"
+
+            <input
+              type="text"
+              placeholder="e.g. Living Room Chair"
               value="${escapeHtml(item.custom_name || "")}"
-              onchange="updateItem(${index}, 'custom_name', this.value)">
+              onchange="updateItem(${index}, 'custom_name', this.value)"
+            >
           </div>
 
           <div class="package-item-field package-item-full">
             <label>Custom Price (RM) <small>(Optional)</small></label>
             <p class="package-item-help">
-              Enter a custom price for this item. Leave 0 to use default pricing.
+              Leave 0 to use default pricing.
             </p>
-            <input type="number" min="0" step="0.01" placeholder="0.00"
-              value="${item.custom_price || 0}"
-              onchange="updateItem(${index}, 'custom_price', this.value)">
+
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              placeholder="0.00"
+              value="${Number(item.custom_price || 0)}"
+              onchange="updateItem(${index}, 'custom_price', this.value)"
+            >
           </div>
         </div>
       </div>
@@ -266,14 +302,12 @@ function renderItems() {
         <button type="button" class="package-add-more-icon" onclick="addItem()">+</button>
         <div>
           <h3>Add more furniture items to this package</h3>
-          <p>Click the button above to add another item</p>
+          <p>Click the button to add another item.</p>
         </div>
       </div>
     </div>
   `;
 }
-
-window.addItem = addItem;
 
 async function loadFurniture() {
   const { data, error } = await supabaseClient
@@ -283,7 +317,7 @@ async function loadFurniture() {
 
   if (error) {
     console.error("Furniture load error:", error);
-    setMsg("Failed to load furniture catalog.", true);
+    setMessage("Failed to load furniture catalog.", true);
     furnitureCache = [];
     return;
   }
@@ -294,7 +328,7 @@ async function loadFurniture() {
 async function uploadImage() {
   if (!croppedBlob) return null;
 
-  const filePath = `packages/package-${Date.now()}.jpg`;
+  const filePath = `packages/package-${Date.now()}-${crypto.randomUUID()}.jpg`;
 
   const { error } = await supabaseClient.storage
     .from(PACKAGE_BUCKET)
@@ -313,7 +347,15 @@ async function uploadImage() {
   return data.publicUrl;
 }
 
-function validatePackageItems() {
+function validatePackage() {
+  const name = packageName.value.trim();
+  const price = Number(packagePrice.value);
+  const description = packageDescription.value.trim();
+
+  if (!name) throw new Error("Package name is required.");
+  if (Number.isNaN(price) || price < 0) throw new Error("Enter a valid package price.");
+  if (!description) throw new Error("Package description is required.");
+
   if (!packageItems.length) {
     throw new Error("Add at least one furniture item.");
   }
@@ -323,28 +365,28 @@ function validatePackageItems() {
   if (invalidItem) {
     throw new Error("Please select furniture for every package item.");
   }
+
+  return {
+    name,
+    price,
+    description
+  };
 }
 
-packageForm.addEventListener("submit", async (event) => {
+async function handlePackageSubmit(event) {
   event.preventDefault();
-  setMsg("");
 
   packageSubmitBtn.disabled = true;
   packageSubmitBtn.textContent = editingPackageId.value ? "Updating..." : "Publishing...";
 
   try {
-    validatePackageItems();
+    setMessage("");
 
+    const packagePayload = validatePackage();
     const imageUrl = await uploadImage();
 
-    const payload = {
-      name: packageName.value.trim(),
-      price: Number(packagePrice.value || 0),
-      description: packageDescription.value.trim()
-    };
-
     if (imageUrl) {
-      payload.image_url = imageUrl;
+      packagePayload.image_url = imageUrl;
     }
 
     let packageId = editingPackageId.value;
@@ -352,7 +394,7 @@ packageForm.addEventListener("submit", async (event) => {
     if (packageId) {
       const { error: updateError } = await supabaseClient
         .from("packages")
-        .update(payload)
+        .update(packagePayload)
         .eq("id", packageId);
 
       if (updateError) throw updateError;
@@ -370,23 +412,17 @@ packageForm.addEventListener("submit", async (event) => {
 
       const { data, error: insertError } = await supabaseClient
         .from("packages")
-        .insert(payload)
+        .insert(packagePayload)
         .select("id")
         .single();
 
-      if (insertError) {
-        console.error("Package insert error:", insertError);
-        throw new Error(insertError.message || "Failed to create package.");
-      }
-
-      if (!data || !data.id) {
-        throw new Error("Package was created but no package ID was returned.");
-      }
+      if (insertError) throw insertError;
+      if (!data?.id) throw new Error("Package was created but no package ID was returned.");
 
       packageId = data.id;
     }
 
-    const itemsInsert = packageItems.map((item) => ({
+    const itemsPayload = packageItems.map((item) => ({
       package_id: packageId,
       furniture_id: item.furniture_id,
       custom_name: item.custom_name?.trim() || null,
@@ -396,25 +432,22 @@ packageForm.addEventListener("submit", async (event) => {
 
     const { error: itemsError } = await supabaseClient
       .from("package_items")
-      .insert(itemsInsert);
+      .insert(itemsPayload);
 
-    if (itemsError) {
-      console.error("Package items insert error:", itemsError);
-      throw new Error(itemsError.message || "Failed to save package items.");
-    }
+    if (itemsError) throw itemsError;
 
-    setMsg(editingPackageId.value ? "Package updated successfully." : "Package published successfully.");
+    setMessage(editingPackageId.value ? "Package updated successfully." : "Package published successfully.");
 
     resetForm();
     await loadPackages();
   } catch (error) {
     console.error("Package save error:", error);
-    setMsg(error.message || "Failed to save package.", true);
+    setMessage(error.message || "Failed to save package.", true);
   } finally {
     packageSubmitBtn.disabled = false;
     packageSubmitBtn.textContent = editingPackageId.value ? "Update Package" : "Publish Package";
   }
-});
+}
 
 async function loadPackages() {
   const { data, error } = await supabaseClient
@@ -450,7 +483,8 @@ async function loadPackages() {
 
     return `
       <div class="package-list-item">
-        <img src="${pkg.image_url || ""}" alt="${escapeHtml(pkg.name)}">
+        <img src="${escapeHtml(pkg.image_url || "")}" alt="${escapeHtml(pkg.name)}">
+
         <div>
           <div class="package-list-title">${escapeHtml(pkg.name)}</div>
           <div class="package-list-meta">${formatCurrency(pkg.price)}</div>
@@ -461,8 +495,8 @@ async function loadPackages() {
           </ul>
 
           <div class="package-list-actions">
-            <button type="button" class="package-list-action-btn" onclick="editPackage('${pkg.id}')">Edit</button>
-            <button type="button" class="package-list-action-btn danger" onclick="deletePackage('${pkg.id}')">Delete</button>
+            <button type="button" class="package-list-action-btn" onclick="editPackage('${escapeHtml(pkg.id)}')">Edit</button>
+            <button type="button" class="package-list-action-btn danger" onclick="deletePackage('${escapeHtml(pkg.id)}')">Delete</button>
           </div>
         </div>
       </div>
@@ -470,8 +504,8 @@ async function loadPackages() {
   }).join("");
 }
 
-window.editPackage = async function editPackage(id) {
-  setMsg("");
+async function editPackage(id) {
+  setMessage("");
 
   const { data, error } = await supabaseClient
     .from("packages")
@@ -481,9 +515,11 @@ window.editPackage = async function editPackage(id) {
 
   if (error) {
     console.error("Package edit load error:", error);
-    setMsg("Failed to load package for editing.", true);
+    setMessage("Failed to load package for editing.", true);
     return;
   }
+
+  resetImageEditor();
 
   editingPackageId.value = data.id;
   packageName.value = data.name || "";
@@ -493,9 +529,8 @@ window.editPackage = async function editPackage(id) {
   if (data.image_url) {
     packageImagePreview.src = data.image_url;
     packageImagePreview.hidden = false;
+    packageImagePreview.style.display = "block";
     packageImageEmpty.style.display = "none";
-  } else {
-    resetImageEditor();
   }
 
   packageItems = (data.package_items || []).map((item) => ({
@@ -510,26 +545,41 @@ window.editPackage = async function editPackage(id) {
   packageCancelEditBtn.hidden = false;
   packageSubmitBtn.textContent = "Update Package";
 
-  window.scrollTo({ top: 0, behavior: "smooth" });
-};
+  setMessage("Editing package. Upload and crop a new image only if you want to replace the current one.");
 
-window.deletePackage = async function deletePackage(id) {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+
+async function deletePackage(id) {
   if (!confirm("Delete this package?")) return;
 
-  const { error } = await supabaseClient
-    .from("packages")
-    .delete()
-    .eq("id", id);
+  try {
+    setMessage("Deleting package...");
 
-  if (error) {
+    const { error: deleteItemsError } = await supabaseClient
+      .from("package_items")
+      .delete()
+      .eq("package_id", id);
+
+    if (deleteItemsError) throw deleteItemsError;
+
+    const { error: deletePackageError } = await supabaseClient
+      .from("packages")
+      .delete()
+      .eq("id", id);
+
+    if (deletePackageError) throw deletePackageError;
+
+    setMessage("Package deleted successfully.");
+    await loadPackages();
+  } catch (error) {
     console.error("Package delete error:", error);
-    setMsg(error.message || "Failed to delete package.", true);
-    return;
+    setMessage(error.message || "Failed to delete package.", true);
   }
-
-  setMsg("Package deleted successfully.");
-  await loadPackages();
-};
+}
 
 function resetForm() {
   packageForm.reset();
@@ -541,5 +591,12 @@ function resetForm() {
 
   packageSubmitBtn.textContent = "Publish Package";
   packageCancelEditBtn.hidden = true;
-  setMsg("");
+
+  setMessage("");
 }
+
+window.addItem = addItem;
+window.removeItem = removeItem;
+window.updateItem = updateItem;
+window.editPackage = editPackage;
+window.deletePackage = deletePackage;

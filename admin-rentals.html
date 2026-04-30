@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Rental Management | Autro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="admin.css" />
+  <link rel="stylesheet" href="admin-rentals.css" />
+</head>
+
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <nav>
+    <a href="index.html" class="nav-logo" aria-label="Autro Home">
+      <span class="nav-logo-text">AUTRO</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="admin.html">Catalog</a></li>
+      <li><a href="admin-packages.html">Package Admin</a></li>
+      <li><a href="admin-agents.html">See Agents</a></li>
+      <li><a href="admin-rentals.html">Rentals</a></li>
+      <li><a href="admin-archive.html">Archive</a></li>
+      <li><a href="admin-analysis.html">Data Analysis</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <button type="button" class="admin-logout-btn" id="logoutBtn">Logout</button>
+    </div>
+  </nav>
+
+  <main class="admin-page rentals-page">
+    <section class="admin-hero">
+      <div>
+        <p class="admin-kicker">Rental Operations</p>
+        <h1 class="admin-title">Rental Management</h1>
+        <p class="admin-desc">
+          Manage active rentals, payment progress, overdue customers, ownership transfer, and archive movement.
+        </p>
+      </div>
+    </section>
+
+    <section class="rentals-summary">
+      <div class="rentals-summary-card">
+        <p>Active Rentals</p>
+        <h2 id="activeRentalsCount">0</h2>
+      </div>
+
+      <div class="rentals-summary-card">
+        <p>On Time</p>
+        <h2 id="onTimeCount">0</h2>
+      </div>
+
+      <div class="rentals-summary-card">
+        <p>Due Soon</p>
+        <h2 id="dueSoonCount">0</h2>
+      </div>
+
+      <div class="rentals-summary-card">
+        <p>Needs Attention</p>
+        <h2 id="attentionCount">0</h2>
+      </div>
+
+      <div class="rentals-summary-card">
+        <p>Fully Paid</p>
+        <h2 id="fullyPaidCount">0</h2>
+      </div>
+    </section>
+
+    <section class="rentals-toolbar">
+      <div class="rentals-search-wrap">
+        <label for="rentalSearch">Search</label>
+        <input type="search" id="rentalSearch" placeholder="Search customer, item, package, or agent..." />
+      </div>
+
+      <div class="rentals-filter-wrap">
+        <label for="rentalFilter">Filter</label>
+        <select id="rentalFilter">
+          <option value="all">All Active Rentals</option>
+          <option value="on_time">On Time</option>
+          <option value="due_soon">Due Soon</option>
+          <option value="overdue">Overdue</option>
+          <option value="behind_schedule">Behind Schedule</option>
+          <option value="fully_paid">Fully Paid</option>
+          <option value="defaulted">Defaulted</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="rentals-table-section">
+      <div class="analysis-section-head">
+        <h3>Active Rental List</h3>
+        <p>Only active and ongoing rentals appear here. Completed archived records should be reviewed in the archive later.</p>
+      </div>
+
+      <div class="rentals-table-wrap">
+        <table class="rentals-table">
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Rental</th>
+              <th>Payment Health</th>
+              <th>Progress</th>
+              <th>Next Payment</th>
+              <th>Agent</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody id="rentalsTableBody">
+            <tr>
+              <td colspan="7">Loading rental records...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <p class="rentals-message" id="rentalsMessage"></p>
+  </main>
+
+  <div class="rental-modal" id="rentalModal" hidden>
+    <div class="rental-modal-backdrop" data-close-modal></div>
+
+    <div class="rental-modal-card">
+      <div class="rental-modal-head">
+        <div>
+          <p class="admin-kicker">Rental Update</p>
+          <h2 id="modalTitle">Update Rental</h2>
+        </div>
+
+        <button type="button" class="rental-modal-close" data-close-modal>&times;</button>
+      </div>
+
+      <form id="rentalUpdateForm" class="rental-update-form">
+        <input type="hidden" id="modalRentalId" />
+
+        <div class="rental-modal-grid">
+          <div class="admin-field">
+            <label for="modalAmountPaid">Amount Paid (RM)</label>
+            <input type="number" id="modalAmountPaid" min="0" step="0.01" />
+          </div>
+
+          <div class="admin-field">
+            <label for="modalPaidMonths">Paid Months</label>
+            <input type="number" id="modalPaidMonths" min="0" step="1" />
+          </div>
+
+          <div class="admin-field">
+            <label for="modalMissedPayments">Missed Payments</label>
+            <input type="number" id="modalMissedPayments" min="0" step="1" />
+          </div>
+
+          <div class="admin-field">
+            <label for="modalNextPaymentDate">Next Payment Date</label>
+            <input type="date" id="modalNextPaymentDate" />
+          </div>
+
+          <div class="admin-field">
+            <label for="modalRentalStatus">Rental Status</label>
+            <select id="modalRentalStatus">
+              <option value="active">Active Rental</option>
+              <option value="ownership_pending">Ownership Pending</option>
+              <option value="ownership_transferred">Ownership Transferred</option>
+              <option value="defaulted">Defaulted</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+
+          <div class="admin-field">
+            <label for="modalPaymentStatus">Payment Status</label>
+            <select id="modalPaymentStatus">
+              <option value="on_time">On Time</option>
+              <option value="due_soon">Due Soon</option>
+              <option value="overdue">Overdue</option>
+              <option value="behind_schedule">Behind Schedule</option>
+              <option value="fully_paid">Fully Paid</option>
+              <option value="closed">Closed</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="rental-modal-actions">
+          <button type="submit" class="admin-submit-btn">Save Update</button>
+          <button type="button" class="admin-secondary-btn" id="recordPaymentBtn">Record Monthly Payment</button>
+          <button type="button" class="admin-secondary-btn" id="transferOwnershipBtn">Confirm Ownership Transfer</button>
+          <button type="button" class="admin-secondary-btn danger-btn" id="archiveRentalBtn">Move to Archive</button>
+        </div>
+
+        <p class="rentals-message" id="modalMessage"></p>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="script.js"></script>
+  <script src="auth.js"></script>
+  <script src="admin-rentals.js"></script>
+</body>
+</html>

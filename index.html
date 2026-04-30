@@ -3,53 +3,61 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Autro</title>
+
+  <title>Autro | The Final Piece of Home</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Zen+Kaku+Gothic+New:wght@400;500&family=Josefin+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
   <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body class="homepage">
   <div class="cursor" id="cursor"></div>
   <div class="cursor-ring" id="cursorRing"></div>
 
   <nav>
-  <div class="nav-logo-wrap">
-    <a class="nav-logo" href="index.html">
-      <svg class="nav-logo-mark" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="14" cy="14" r="12" stroke="#1c1a17" stroke-width="1"/>
-        <line x1="4" y1="22" x2="26" y2="8" stroke="#1c1a17" stroke-width="0.8"/>
-        <circle cx="15" cy="16" r="3" fill="#b8923a"/>
-      </svg>
-      <span class="nav-logo-text">Autr</span>
-    </a>
-    <button type="button" class="logo-o" id="adminTrigger" aria-label="Admin login">o</button>
-  </div>
+    <div class="nav-logo-wrap">
+      <a class="nav-logo" href="index.html" aria-label="Autro Home">
+        <svg class="nav-logo-mark" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="14" cy="14" r="12" stroke="#1c1a17" stroke-width="1" />
+          <line x1="4" y1="22" x2="26" y2="8" stroke="#1c1a17" stroke-width="0.8" />
+          <circle cx="15" cy="16" r="3" fill="#b8923a" />
+        </svg>
 
-  <ul class="nav-links">
-    <li><a href="furniture.html">Furniture</a></li>
-    <li><a href="about.html" data-i18n="nav.about">About</a></li>
-    <li><a href="partners.html" data-i18n="nav.partners">Partners</a></li>
-    <li><a href="#philosophy" data-i18n="nav.philosophy">Philosophy</a></li>
-    <li><a href="#contact" data-i18n="nav.contact">Contact</a></li>
-    <li><a href="index.html" data-i18n="nav.home">Home</a></li>
-    <li><a href="agent-login.html">Agent</a></li>
-  </ul>
+        <span class="nav-logo-text">Autr</span>
+      </a>
 
-  <div class="nav-actions">
-    <select id="languageSwitcher" class="lang-dropdown" aria-label="Language switcher">
-      <option value="en">English</option>
-      <option value="zh">中文</option>
-    </select>
-    <a class="nav-cta" href="#contact" data-i18n="nav.cta">Begin</a>
-  </div>
-</nav>
+      <button type="button" class="logo-o" id="adminTrigger" aria-label="Admin login">o</button>
+    </div>
+
+    <ul class="nav-links">
+      <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+      <li><a href="furniture.html" data-i18n="nav.furniture">Furniture</a></li>
+      <li><a href="packages.html">Packages</a></li>
+      <li><a href="about.html" data-i18n="nav.about">About</a></li>
+      <li><a href="partners.html" data-i18n="nav.partners">Partners</a></li>
+      <li><a href="#philosophy" data-i18n="nav.philosophy">Philosophy</a></li>
+      <li><a href="#contact" data-i18n="nav.contact">Contact</a></li>
+      <li><a href="agent-login.html" data-i18n="nav.agent">Agent Login</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <select id="languageSwitcher" class="lang-dropdown" aria-label="Language switcher">
+        <option value="en">English</option>
+        <option value="zh">中文</option>
+      </select>
+
+      <a class="nav-cta" href="#contact" data-i18n="nav.cta">Begin</a>
+    </div>
+  </nav>
 
   <main>
     <section class="hero">
       <div class="hero-left">
         <div class="hero-circle-wrap">
-          <svg viewBox="0 0 380 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg viewBox="0 0 380 380" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <circle cx="190" cy="190" r="155" stroke="#1c1a17" stroke-width="1.2" stroke-dasharray="980" stroke-dashoffset="980" stroke-linecap="round" style="animation: inkDraw 2.2s 0.3s cubic-bezier(0.4,0,0.2,1) both; fill: none;" />
             <ellipse cx="191" cy="189" rx="153" ry="157" stroke="#1c1a17" stroke-width="0.25" stroke-dasharray="980" stroke-dashoffset="980" opacity="0.18" style="animation: inkDraw 2.4s 0.5s cubic-bezier(0.4,0,0.2,1) both; fill: none;" />
             <line x1="58" y1="305" x2="368" y2="180" stroke="#1c1a17" stroke-width="0.75" stroke-linecap="round" stroke-dasharray="460" stroke-dashoffset="460" style="animation: inkDraw 1.4s 1.8s ease both;" />
@@ -57,9 +65,10 @@
             <circle cx="300" cy="240" r="0" fill="#d4aa5a" opacity="0.25" style="animation: goldAppear 0.4s 3s ease both; r: 16;" />
           </svg>
         </div>
+
         <div class="scroll-hint">
           <div class="scroll-line"></div>
-          Scroll
+          <span>Scroll</span>
         </div>
       </div>
 
@@ -67,7 +76,10 @@
         <p class="hero-kanji">満</p>
         <h1 class="hero-brand">Autro</h1>
         <p class="hero-tagline" data-i18n="hero.kicker">The Final Piece Of Home</p>
-        <p class="hero-desc" data-i18n="hero.desc">AUTRO completes the feeling of home through furniture, space, and warm minimalist living.</p>
+        <p class="hero-desc" data-i18n="hero.desc">
+          AUTRO completes the feeling of home through furniture, space, and warm minimalist living.
+        </p>
+
         <div class="hero-btns">
           <a class="btn-gold" href="furniture.html">Select Furniture</a>
           <a class="btn-ghost" href="#philosophy" data-i18n="hero.secondaryBtn">Our Philosophy</a>
@@ -80,29 +92,27 @@
         <h2>Browse Furniture</h2>
         <p>Start selecting your space pieces</p>
       </div>
-    
+
       <div class="browse-grid">
-      
         <a href="furniture.html" class="browse-card">
-          <img src="img-index/livinghomepage.jpg">
+          <img src="img-index/livinghomepage.jpg" alt="Living room furniture">
           <h3>Living Room</h3>
         </a>
-      
+
         <a href="furniture.html" class="browse-card">
-          <img src="img-index/bedhomepage.jpg">
+          <img src="img-index/bedhomepage.jpg" alt="Bedroom furniture">
           <h3>Bedroom</h3>
         </a>
-      
+
         <a href="furniture.html" class="browse-card">
-          <img src="img-index/dininghomepage.jpg">
+          <img src="img-index/dininghomepage.jpg" alt="Dining furniture">
           <h3>Dining</h3>
         </a>
-      
+
         <a href="furniture.html" class="browse-card">
-          <img src="img-index/decorhomepage.jpg">
+          <img src="img-index/decorhomepage.jpg" alt="Home decor furniture">
           <h3>Decor</h3>
         </a>
-      
       </div>
     </section>
 
@@ -111,28 +121,41 @@
         <div>
           <p class="section-label" data-i18n="philosophy.label">Our Philosophy</p>
           <h2 class="section-title" data-i18n="philosophy.title">A home should feel complete</h2>
-          <p class="section-body" data-i18n="philosophy.body">Buying a house is only the beginning. Furniture, warmth, and atmosphere are what turn a space into home.</p>
+          <p class="section-body" data-i18n="philosophy.body">
+            Buying a house is only the beginning. Furniture, warmth, and atmosphere are what turn a space into home.
+          </p>
         </div>
-        <div class="why-intro-right" data-i18n="philosophy.side">We believe comfort matters more than complexity. Quiet, warmth, natural wood, and thoughtful emptiness create a space people want to return to.</div>
+
+        <div class="why-intro-right" data-i18n="philosophy.side">
+          We believe comfort matters more than complexity. Quiet, warmth, natural wood, and thoughtful emptiness create a space people want to return to.
+        </div>
       </div>
 
       <div class="why-grid">
         <div class="why-card">
           <p class="why-card-num">01</p>
           <h3 data-i18n="philosophy.cards.0.title">Warm minimalism</h3>
-          <p data-i18n="philosophy.cards.0.body">Inspired by Japandi and Japanese aesthetics, AUTRO focuses on calm, warmth, balance, and everyday comfort.</p>
+          <p data-i18n="philosophy.cards.0.body">
+            Inspired by Japandi and Japanese aesthetics, AUTRO focuses on calm, warmth, balance, and everyday comfort.
+          </p>
           <div class="why-gold-line"></div>
         </div>
+
         <div class="why-card">
           <p class="why-card-num">02</p>
           <h3 data-i18n="philosophy.cards.1.title">Comfort over display</h3>
-          <p data-i18n="philosophy.cards.1.body">We do not design spaces to feel expensive. We design them to feel inviting, peaceful, and lived in.</p>
+          <p data-i18n="philosophy.cards.1.body">
+            We do not design spaces to feel expensive. We design them to feel inviting, peaceful, and lived in.
+          </p>
           <div class="why-gold-line"></div>
         </div>
+
         <div class="why-card">
           <p class="why-card-num">03</p>
           <h3 data-i18n="philosophy.cards.2.title">Details complete the home</h3>
-          <p data-i18n="philosophy.cards.2.body">Sofas, tables, lighting, rugs, and decor all work together to create the final feeling of home.</p>
+          <p data-i18n="philosophy.cards.2.body">
+            Sofas, tables, lighting, rugs, and decor all work together to create the final feeling of home.
+          </p>
           <div class="why-gold-line"></div>
         </div>
       </div>
@@ -142,7 +165,9 @@
       <div class="plans-header">
         <p class="section-label" data-i18n="solutions.label">What We Offer</p>
         <h2 class="section-title" data-i18n="solutions.title">Furniture, space, and lifestyle solutions</h2>
-        <p class="section-body" data-i18n="solutions.body">AUTRO serves homeowners, rental spaces, hospitality projects, and suppliers through one connected platform.</p>
+        <p class="section-body" data-i18n="solutions.body">
+          AUTRO serves homeowners, rental spaces, hospitality projects, and suppliers through one connected platform.
+        </p>
       </div>
 
       <div class="plans-grid">
@@ -150,12 +175,15 @@
           <p class="plan-period" data-i18n="solutions.cards.0.kicker">For Homeowners</p>
           <h3 class="plan-name" data-i18n="solutions.cards.0.title">Living Hall</h3>
           <p class="plan-sub" data-i18n="solutions.cards.0.desc">Furniture and styling for the heart of the home.</p>
+
           <hr class="plan-sep" />
+
           <ul class="plan-list">
             <li data-i18n="solutions.cards.0.items.0">Sofas, coffee tables, TV consoles, side cabinets</li>
             <li data-i18n="solutions.cards.0.items.1">Lighting, rugs, scent, trays, wall decor</li>
             <li data-i18n="solutions.cards.0.items.2">Recommendations based on space and budget</li>
           </ul>
+
           <a class="plan-btn plan-btn-outline" href="#contact" data-i18n="contact.button">Contact Us</a>
         </div>
 
@@ -163,25 +191,33 @@
           <p class="plan-period" data-i18n="solutions.cards.1.kicker">For Projects</p>
           <h3 class="plan-name" data-i18n="solutions.cards.1.title">Space Setup</h3>
           <p class="plan-sub" data-i18n="solutions.cards.1.desc">Complete furnishing support for Airbnb, hotels, and property units.</p>
+
           <hr class="plan-sep" />
+
           <ul class="plan-list">
             <li data-i18n="solutions.cards.1.items.0">Show units and property styling</li>
             <li data-i18n="solutions.cards.1.items.1">Airbnb and hotel furnishing solutions</li>
             <li data-i18n="solutions.cards.1.items.2">Rental unit upgrades and transformation</li>
           </ul>
+
           <a class="plan-btn plan-btn-gold" href="partners.html" data-i18n="nav.partners">Partners</a>
         </div>
 
         <div class="plan-card">
           <p class="plan-period" data-i18n="solutions.cards.2.kicker">For Suppliers</p>
           <h3 class="plan-name" data-i18n="solutions.cards.2.title">Brand Platform</h3>
-          <p class="plan-sub" data-i18n="solutions.cards.2.desc">A channel connecting manufacturers to real end users and long-term market opportunities.</p>
+          <p class="plan-sub" data-i18n="solutions.cards.2.desc">
+            A channel connecting manufacturers to real end users and long-term market opportunities.
+          </p>
+
           <hr class="plan-sep" />
+
           <ul class="plan-list">
             <li data-i18n="solutions.cards.2.items.0">Online and offline exposure</li>
             <li data-i18n="solutions.cards.2.items.1">Brand presentation and curated display</li>
             <li data-i18n="solutions.cards.2.items.2">Access to property and hospitality markets</li>
           </ul>
+
           <a class="plan-btn plan-btn-outline" href="partners.html" data-i18n="nav.partners">Partners</a>
         </div>
       </div>
@@ -191,7 +227,10 @@
       <div class="vip-text">
         <p class="section-label" data-i18n="care.label">AUTRO CARE</p>
         <h2 class="section-title" data-i18n="care.title">A furniture upgrade system that grows with life</h2>
-        <p class="section-body" data-i18n="care.body">Life changes. Homes change too. AUTRO CARE helps customers own their ideal space sooner and upgrade later with less waste.</p>
+        <p class="section-body" data-i18n="care.body">
+          Life changes. Homes change too. AUTRO CARE helps customers own their ideal space sooner and upgrade later with less waste.
+        </p>
+
         <ul class="vip-list">
           <li data-i18n="care.items.0">6-month installment option</li>
           <li data-i18n="care.items.1">12-month installment option</li>
@@ -203,20 +242,20 @@
       </div>
 
       <div class="vip-visual">
-        <svg viewBox="0 0 520 600" fill="none" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
-          <rect width="520" height="600" fill="#16140f"/>
-          <circle cx="260" cy="300" r="200" stroke="#2a2620" stroke-width="40" fill="none"/>
-          <circle cx="260" cy="300" r="160" stroke="#b8923a" stroke-width="0.5" fill="none" opacity="0.4"/>
-          <line x1="0" y1="300" x2="520" y2="300" stroke="#2a2620" stroke-width="1.5"/>
-          <rect x="60" y="420" width="400" height="100" fill="#1e1b14"/>
-          <rect x="170" y="160" width="180" height="120" stroke="#b8923a" stroke-width="0.8" fill="none" opacity="0.5"/>
-          <rect x="100" y="360" width="320" height="65" fill="#2a2318" rx="3"/>
-          <rect x="100" y="348" width="320" height="20" fill="#322b1f" rx="2"/>
-          <rect x="100" y="348" width="22" height="65" fill="#322b1f" rx="2"/>
-          <rect x="398" y="348" width="22" height="65" fill="#322b1f" rx="2"/>
-          <rect x="180" y="420" width="160" height="10" fill="#b8923a" opacity="0.5" rx="1"/>
-          <circle cx="260" cy="300" r="12" fill="#b8923a" opacity="0.9"/>
-          <circle cx="260" cy="300" r="6" fill="#d4aa5a"/>
+        <svg viewBox="0 0 520 600" fill="none" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <rect width="520" height="600" fill="#16140f" />
+          <circle cx="260" cy="300" r="200" stroke="#2a2620" stroke-width="40" fill="none" />
+          <circle cx="260" cy="300" r="160" stroke="#b8923a" stroke-width="0.5" fill="none" opacity="0.4" />
+          <line x1="0" y1="300" x2="520" y2="300" stroke="#2a2620" stroke-width="1.5" />
+          <rect x="60" y="420" width="400" height="100" fill="#1e1b14" />
+          <rect x="170" y="160" width="180" height="120" stroke="#b8923a" stroke-width="0.8" fill="none" opacity="0.5" />
+          <rect x="100" y="360" width="320" height="65" fill="#2a2318" rx="3" />
+          <rect x="100" y="348" width="320" height="20" fill="#322b1f" rx="2" />
+          <rect x="100" y="348" width="22" height="65" fill="#322b1f" rx="2" />
+          <rect x="398" y="348" width="22" height="65" fill="#322b1f" rx="2" />
+          <rect x="180" y="420" width="160" height="10" fill="#b8923a" opacity="0.5" rx="1" />
+          <circle cx="260" cy="300" r="12" fill="#b8923a" opacity="0.9" />
+          <circle cx="260" cy="300" r="6" fill="#d4aa5a" />
         </svg>
       </div>
     </section>
@@ -226,10 +265,15 @@
         <p class="section-label" data-i18n="partners.label">Why AUTRO</p>
         <p class="testimonial-big-kanji">道</p>
       </div>
+
       <div>
         <p class="testimonial-stars">★ ★ ★ ★ ★</p>
-        <blockquote data-i18n="partners.quote">AUTRO connects furniture, real estate, hospitality, aesthetics, and end users into one practical ecosystem.</blockquote>
-        <p class="testimonial-attr" data-i18n="partners.attr">Built for homeowners, suppliers, Airbnb, hotels, and property projects</p>
+        <blockquote data-i18n="partners.quote">
+          AUTRO connects furniture, real estate, hospitality, aesthetics, and end users into one practical ecosystem.
+        </blockquote>
+        <p class="testimonial-attr" data-i18n="partners.attr">
+          Built for homeowners, suppliers, Airbnb, hotels, and property projects
+        </p>
       </div>
     </section>
 
@@ -238,8 +282,9 @@
         <h2 data-i18n="contact.title">Let’s complete the feeling of home</h2>
         <p data-i18n="contact.subtitle">Tell us about your space, project, or partnership</p>
       </div>
+
       <form class="newsletter-form" onsubmit="return false;">
-        <input type="email" data-i18n-placeholder="contact.placeholder" placeholder="Your email address" />
+        <input type="email" data-i18n-placeholder="contact.placeholder" placeholder="Your email address" aria-label="Email address" />
         <button type="submit" data-i18n="contact.button">Contact Us</button>
       </form>
     </section>
@@ -251,7 +296,9 @@
         <p class="footer-brand-kanji">満</p>
         <p class="footer-brand-name">Autro</p>
         <p class="footer-tagline" data-i18n="footer.tagline">The final piece of home</p>
-        <p class="footer-brand-desc" data-i18n="footer.desc">A furniture, space, and lifestyle platform designed to make homes feel complete.</p>
+        <p class="footer-brand-desc" data-i18n="footer.desc">
+          A furniture, space, and lifestyle platform designed to make homes feel complete.
+        </p>
       </div>
 
       <div class="footer-col">
@@ -265,7 +312,8 @@
       <div class="footer-col">
         <h4 data-i18n="footer.services">Services</h4>
         <ul>
-          <li><a href="index.html#solutions" data-i18n="solutions.cards.0.title">Living Hall</a></li>
+          <li><a href="furniture.html" data-i18n="nav.furniture">Furniture</a></li>
+          <li><a href="packages.html">Packages</a></li>
           <li><a href="index.html#care" data-i18n="nav.care">Autro Care</a></li>
         </ul>
       </div>
@@ -288,3 +336,4 @@
   <script src="script.js"></script>
 </body>
 </html>
+

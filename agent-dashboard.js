@@ -26,11 +26,39 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
+(async function initAgentDashboard() {
+  const result = await requireAgent();
+  if (!result) return;
+
+  logoutBtn.addEventListener("click", async () => {
+    await signOutUser();
+    window.location.href = "agent-login.html";
+  });
+
+  try {
+    const agent = result.agent;
+    const sales = await loadAgentSales(agent.id);
+
+    renderAgentDashboard(agent, sales);
+    agentDashboard.hidden = false;
+  } catch (error) {
+    console.error("Agent dashboard error:", error);
+    salesEmpty.textContent = error.message || "Failed to load agent dashboard.";
+    salesEmpty.hidden = false;
+  }
+})();
+
 async function loadAgentSales(agentId) {
   const { data, error } = await supabaseClient
     .from("commissions")
     .select(`
-      *,
+      id,
+      order_id,
+      agent_id,
+      commission_rate,
+      commission_amount,
+      status,
+      created_at,
       rental_orders (
         id,
         customer_name,
@@ -56,15 +84,13 @@ function renderAgentDashboard(agent, sales) {
   agentNameHeading.textContent = agent.full_name || "Agent Dashboard";
   commissionRate.textContent = `${Number(agent.commission_rate || 0).toFixed(2)}%`;
 
-  const totalCommissionValue = sales.reduce(
-    (sum, item) => sum + Number(item.commission_amount || 0),
-    0
-  );
+  const totalCommissionValue = sales.reduce((sum, item) => {
+    return sum + Number(item.commission_amount || 0);
+  }, 0);
 
-  const totalRevenueValue = sales.reduce(
-    (sum, item) => sum + Number(item.rental_orders?.total_amount || 0),
-    0
-  );
+  const totalRevenueValue = sales.reduce((sum, item) => {
+    return sum + Number(item.rental_orders?.total_amount || 0);
+  }, 0);
 
   totalCommission.textContent = formatCurrency(totalCommissionValue);
   totalRevenue.textContent = formatCurrency(totalRevenueValue);
@@ -73,16 +99,17 @@ function renderAgentDashboard(agent, sales) {
   salesTableBody.innerHTML = "";
 
   if (!sales.length) {
+    salesEmpty.textContent = "No sales found for this agent.";
     salesEmpty.hidden = false;
     return;
   }
 
   salesEmpty.hidden = true;
 
-  sales.forEach((item) => {
+  salesTableBody.innerHTML = sales.map((item) => {
     const order = item.rental_orders || {};
 
-    salesTableBody.innerHTML += `
+    return `
       <tr>
         <td>${formatDate(order.created_at || item.created_at)}</td>
         <td>${escapeHtml(order.customer_name || "-")}</td>
@@ -92,25 +119,5 @@ function renderAgentDashboard(agent, sales) {
         <td>${formatCurrency(item.commission_amount)}</td>
       </tr>
     `;
-  });
+  }).join("");
 }
-
-(async function initAgentDashboard() {
-  const result = await requireAgent();
-  if (!result) return;
-
-  logoutBtn.addEventListener("click", async () => {
-    await signOutUser();
-    window.location.href = "agent-login.html";
-  });
-
-  try {
-    const agent = result.agent;
-    const sales = await loadAgentSales(agent.id);
-
-    renderAgentDashboard(agent, sales);
-    agentDashboard.hidden = false;
-  } catch (error) {
-    console.error("Agent dashboard error:", error);
-  }
-})();

@@ -1,64 +1,207 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Agent Login | Autro</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="styles.css" />
+
   <style>
-    .auth-page{min-height:100vh;display:grid;place-items:center;padding:110px 6%;background:var(--paper)}
-    .auth-card{width:min(420px,100%);background:var(--paper);border:1px solid var(--ink-faint);padding:28px}
-    .auth-title{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:400;margin-bottom:10px}
-    .auth-desc{font-size:14px;color:var(--ink-soft);margin-bottom:20px}
-    .auth-field{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
-    .auth-field label{font-family:'Josefin Sans',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--ink-soft)}
-    .auth-field input{padding:13px 14px;border:1px solid var(--ink-faint);background:var(--paper);font-size:14px}
-    .auth-btn{width:100%;padding:14px 18px;background:var(--gold);color:var(--white);border:1px solid var(--gold);font-family:'Josefin Sans',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer}
-    .auth-msg{min-height:20px;margin-top:14px;font-size:13px;color:#9d4a3f}
+    .auth-page {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 110px 6%;
+      background:
+        radial-gradient(circle at top left, rgba(184, 146, 58, 0.1), transparent 34%),
+        var(--paper);
+    }
+
+    .auth-card {
+      width: min(430px, 100%);
+      background: rgba(250, 248, 245, 0.88);
+      border: 1px solid var(--ink-faint);
+      padding: 34px;
+      box-shadow: 0 24px 70px rgba(28, 26, 23, 0.08);
+    }
+
+    .auth-kicker {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 11px;
+      letter-spacing: 2.4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+
+    .auth-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 42px;
+      font-weight: 400;
+      line-height: 1.05;
+      color: var(--ink);
+      margin-bottom: 12px;
+    }
+
+    .auth-desc {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--ink-soft);
+      margin-bottom: 26px;
+    }
+
+    .auth-field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .auth-field label {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+
+    .auth-field input {
+      width: 100%;
+      padding: 14px 15px;
+      border: 1px solid var(--ink-faint);
+      background: rgba(255, 255, 255, 0.62);
+      color: var(--ink);
+      font-family: 'Zen Kaku Gothic New', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .auth-field input:focus {
+      border-color: var(--gold);
+      background: var(--white);
+      box-shadow: 0 0 0 3px rgba(184, 146, 58, 0.1);
+    }
+
+    .auth-btn {
+      width: 100%;
+      padding: 15px 18px;
+      background: var(--gold);
+      color: var(--white);
+      border: 1px solid var(--gold);
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      margin-top: 8px;
+    }
+
+    .auth-btn:hover {
+      background: transparent;
+      color: var(--gold);
+    }
+
+    .auth-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .auth-msg {
+      min-height: 20px;
+      margin-top: 14px;
+      font-size: 13px;
+      color: #9d4a3f;
+    }
+
+    .auth-back {
+      display: inline-block;
+      margin-top: 18px;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 11px;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      text-decoration: none;
+    }
+
+    .auth-back:hover {
+      color: var(--ink);
+    }
+
+    .cursor,
+    .cursor-ring {
+      display: none !important;
+    }
+
+    body,
+    body * {
+      cursor: auto !important;
+    }
+
+    button,
+    a {
+      cursor: pointer !important;
+    }
   </style>
 </head>
+
 <body>
   <main class="auth-page">
     <form class="auth-card" id="agentLoginForm">
+      <p class="auth-kicker">Autro Agent</p>
       <h1 class="auth-title">Agent Login</h1>
-      <p class="auth-desc">Sign in with your agent account.</p>
+      <p class="auth-desc">Sign in with your agent account to view linked rental orders, revenue, and commission records.</p>
 
       <div class="auth-field">
         <label for="email">Email</label>
-        <input id="email" type="email" required>
+        <input id="email" type="email" autocomplete="email" required />
       </div>
 
       <div class="auth-field">
         <label for="password">Password</label>
-        <input id="password" type="password" required>
+        <input id="password" type="password" autocomplete="current-password" required />
       </div>
 
-      <button class="auth-btn" type="submit">Sign In</button>
+      <button class="auth-btn" id="loginBtn" type="submit">Sign In</button>
       <p class="auth-msg" id="authMsg"></p>
+
+      <a class="auth-back" href="index.html">Back to website</a>
     </form>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="auth.js"></script>
+
   <script>
     const form = document.getElementById("agentLoginForm");
     const authMsg = document.getElementById("authMsg");
-    
+    const loginBtn = document.getElementById("loginBtn");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
+
       authMsg.textContent = "";
+      loginBtn.disabled = true;
+      loginBtn.textContent = "Signing In...";
 
       try {
-        await signInUser(
-          document.getElementById("email").value.trim(),
-          document.getElementById("password").value
-        );
+        await signInUser(emailInput.value.trim(), passwordInput.value);
 
         const result = await requireAgent();
-        if (result) window.location.href = "agent-dashboard.html";
+
+        if (result) {
+          window.location.href = "agent-dashboard.html";
+        }
       } catch (error) {
         authMsg.textContent = error.message || "Login failed.";
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.textContent = "Sign In";
       }
     });
   </script>
