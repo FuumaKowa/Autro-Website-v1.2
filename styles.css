@@ -1311,3 +1311,182 @@ footer {
     font-size: 80px;
   }
 }
+
+nav {
+  height: 76px;
+  padding: 0 6%;
+}
+
+.nav-logo-wrap {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  height: 76px;
+}
+
+.nav-logo-mark {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.nav-logo-text,
+.logo-o {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 6px;
+  line-height: 1;
+  color: var(--ink);
+  text-transform: uppercase;
+}
+
+.logo-o {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin-left: 2px;
+  cursor: pointer;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links li {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links a {
+  display: flex;
+  align-items: center;
+  height: 76px;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+  text-decoration: none;
+}
+
+.nav-actions {
+  height: 76px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.lang-dropdown {
+  height: 42px;
+  display: flex;
+  align-items: center;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--ink-faint);
+  padding: 0 38px 0 16px;
+  outline: none;
+}
+
+.nav-cta {
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  line-height: 1;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  padding: 0 22px;
+  background: transparent;
+  transition: all 0.35s ease;
+}
+
+.nav-cta:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+@media (max-width: 1200px) {
+  .nav-links {
+    gap: 18px;
+  }
+
+  .nav-links a {
+    font-size: 11px;
+    letter-spacing: 1.6px;
+  }
+}
+
+@media (max-width: 900px) {
+  .nav-links {
+    display: none;
+  }
+
+  nav {
+    padding: 0 5%;
+  }
+
+  .nav-actions {
+    gap: 10px;
+  }
+
+  .lang-dropdown,
+  .nav-cta {
+    font-size: 10px;
+    height: 38px;
+    padding: 0 12px;
+  }
+}
+
+@media (max-width: 680px) {
+  nav,
+  .nav-logo,
+  .nav-actions {
+    height: 68px;
+  }
+
+  .nav-logo-mark {
+    width: 24px;
+    height: 24px;
+  }
+
+  .nav-logo-text,
+  .logo-o {
+    font-size: 14px;
+    letter-spacing: 4px;
+  }
+
+  .nav-cta {
+    display: none;
+  }
+}
