@@ -55,6 +55,62 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
+function formatDateForInput(value) {
+  if (!value) return "";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+
+  return date.toISOString().slice(0, 10);
+}
+
+function addMonths(value, months) {
+  const date = value ? new Date(value) : new Date();
+
+  if (Number.isNaN(date.getTime())) {
+    return new Date();
+  }
+
+  date.setMonth(date.getMonth() + Number(months || 0));
+
+  return date;
+}
+
+function buildRentalOperationFields(totalAmount, monthlyAmount, rentalMonths, rentalStartDate) {
+  const startDate = rentalStartDate ? new Date(rentalStartDate) : new Date();
+
+  const safeStartDate = Number.isNaN(startDate.getTime()) ? new Date() : startDate;
+  const endDate = addMonths(safeStartDate, rentalMonths);
+  const nextPaymentDate = addMonths(safeStartDate, 1);
+
+  return {
+    rental_status: "active",
+    payment_status: "on_time",
+    archive_status: "active",
+
+    rental_start_date: formatDateForInput(safeStartDate),
+    rental_end_date: formatDateForInput(endDate),
+    rental_duration_months: Number(rentalMonths || 0),
+
+    monthly_payment: Number(monthlyAmount || 0),
+    total_amount: Number(totalAmount || 0),
+    amount_paid: 0,
+    paid_months: 0,
+    missed_payments: 0,
+
+    next_payment_date: formatDateForInput(nextPaymentDate),
+    last_payment_date: null,
+
+    ownership_transferred: false,
+    ownership_transfer_date: null,
+    archived_at: null,
+    updated_at: new Date().toISOString()
+  };
+}
+
 function normalizeProduct(row) {
   return {
     id: row.id,
@@ -215,6 +271,13 @@ async function handleCheckoutSubmit(event) {
       agent = await findAgentByEmail(agentEmail);
     }
 
+    const rentalFields = buildRentalOperationFields(
+      pricing.total,
+      pricing.monthly,
+      months,
+      rentalStartDate
+    );
+
     await createRentalOrder({
       customer_name: customerName,
       customer_email: customerEmail || null,
@@ -223,15 +286,14 @@ async function handleCheckoutSubmit(event) {
       item_id: activeProduct.id,
       item_name: activeProduct.name,
       rental_duration: `${months} months`,
-      total_amount: pricing.total,
-      payment_status: "pending",
       agent_id: agent ? agent.id : null,
       agent_code: agentEmail || null,
       notes: [
         rentalStartDate ? `Rental start date: ${rentalStartDate}` : "",
         homeAddress ? `Address: ${homeAddress}` : "",
         notes ? `Notes: ${notes}` : ""
-      ].filter(Boolean).join("\n")
+      ].filter(Boolean).join("\n"),
+      ...rentalFields
     });
 
     setCheckoutMessage("Order submitted successfully.");

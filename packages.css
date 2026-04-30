@@ -334,20 +334,6 @@
   color: #fff;
 }
 
-body:not(.homepage) {
-  cursor: auto;
-}
-
-body:not(.homepage) a,
-body:not(.homepage) button {
-  cursor: pointer;
-}
-
-.cursor,
-.cursor-ring {
-  display: none !important;
-}
-
 @media (max-width: 680px) {
   .packages-page {
     padding: 100px 6% 70px;
