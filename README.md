@@ -3,11 +3,15 @@
 ````md
 # Autro Furniture Rental Website
 
-Autro is a furniture rental and rent-to-own website built for customers, agents, and administrators. The website allows customers to browse furniture, rent individual items or packages, and connect orders to agents. Admins can manage catalog items, packages, agents, rental records, commissions, and business analysis.
+Autro is a furniture rental and rent-to-own website built for customers, agents, and administrators.
+The website allows customers to browse furniture, rent individual items or packages, and connect orders to agents.
+Admins can manage catalog items, packages, agents, rental records, commissions, and business analysis.
 
 ## Overview
 
-Autro focuses on warm minimalist furniture rental. The system supports individual furniture rental, curated furniture packages, agent-linked orders, rental payment tracking, and ownership transfer after the full rental duration and payment completion.
+Autro focuses on warm minimalist furniture rental.
+The system supports individual furniture rental, curated furniture packages, agent-linked orders, rental payment tracking,
+and ownership transfer after the full rental duration and payment completion.
 
 ## Features
 
@@ -73,7 +77,9 @@ active
 archived
 ```
 
-A new rental starts as `active` and `on_time`. Admin can update the payment progress as the customer pays monthly. Once all payments are completed and the rental period is finished, ownership can be transferred. Completed records can then be moved into the archive.
+A new rental starts as `active` and `on_time`. Admin can update the payment progress as the customer pays monthly. 
+Once all payments are completed and the rental period is finished, ownership can be transferred. 
+Completed records can then be moved into the archive.
 
 ## Admin Data Analysis
 
@@ -204,7 +210,9 @@ Then connect the GitHub repository to Vercel and deploy from the selected branch
 
 ## Current Status
 
-The current version includes customer rental submission, furniture and package browsing, admin catalog management, agent management, commission tracking, rental analytics, rental management, archive workflow, and system-generated admin insights.
+The current version includes customer rental submission, furniture and package browsing, 
+admin catalog management, agent management, commission tracking, rental analytics, rental management, 
+archive workflow, and system-generated admin insights.
 
 ## Future Improvements
 
