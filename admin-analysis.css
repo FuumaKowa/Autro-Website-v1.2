@@ -80,6 +80,27 @@
   margin-bottom: 26px;
 }
 
+.analysis-export-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  padding: 12px 20px;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.analysis-export-btn:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
 .chart-box {
   padding: 30px;
   min-width: 0;

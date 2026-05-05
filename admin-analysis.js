@@ -1,6 +1,11 @@
 let monthlyRevenueChartInstance = null;
 let rentalHealthChartInstance = null;
 
+let analysisOrders = [];
+let analysisCommissions = [];
+let analysisAgents = [];
+let analysisAgentMap = {};
+
 document.addEventListener("DOMContentLoaded", async () => {
   const authData = await requireAdmin();
 
@@ -9,6 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   setupLogoutButton();
+  setupCsvExportButton();
   await loadAnalysisDashboard();
 });
 
@@ -28,6 +34,16 @@ function setupLogoutButton() {
       alert("Failed to logout. Please try again.");
     }
   });
+}
+
+function setupCsvExportButton() {
+  const exportBtn = document.getElementById("exportAnalysisCsvBtn");
+
+  if (!exportBtn) {
+    return;
+  }
+
+  exportBtn.addEventListener("click", exportAnalysisToCsv);
 }
 
 function formatCurrency(value) {
@@ -95,6 +111,7 @@ function getOrderCustomer(order) {
     order.full_name ||
     order.name ||
     order.client_name ||
+    order.customer_email ||
     order.email ||
     "-"
   );
@@ -112,20 +129,21 @@ function getOrderItem(order) {
   );
 }
 
-function getOrderAgent(order, agentMap) {
+function getOrderAgent(order, agentMap = analysisAgentMap) {
   const agentId =
     order.agent_id ||
     order.agentId ||
     order.assigned_agent_id ||
     null;
 
-  if (agentId && agentMap[agentId]) {
-    return agentMap[agentId];
+  if (agentId && agentMap[String(agentId)]) {
+    return agentMap[String(agentId)];
   }
 
   return (
     order.agent_name ||
     order.agent_email ||
+    order.agent_code ||
     agentId ||
     "-"
   );
@@ -374,18 +392,19 @@ async function loadAnalysisDashboard() {
     const orders = await fetchRentalOrders();
     const commissions = await fetchCommissions();
     const agents = await fetchAgents();
-
     const agentMap = createAgentMap(agents);
+
+    analysisOrders = orders;
+    analysisCommissions = commissions;
+    analysisAgents = agents;
+    analysisAgentMap = agentMap;
 
     renderSummaryCards(orders, commissions);
     renderHighlightCards(orders, agentMap);
     renderMonthlyRevenueChart(orders);
     renderRentalHealthChart(orders);
     renderRecentSalesTable(orders, agentMap);
-
-    if (typeof renderAdminInsights === "function") {
-      renderAdminInsights(orders, commissions, agents, agentMap);
-    }
+    renderAdminInsights(orders, commissions, agents, agentMap);
 
     if (analysisMessage) {
       analysisMessage.textContent = `Last updated: ${new Date().toLocaleString("en-MY")}`;
@@ -399,232 +418,6 @@ async function loadAnalysisDashboard() {
 
     renderEmptyRecentSalesTable("Failed to load rental data.");
   }
-}
-
-function renderAdminInsights(orders, commissions, agents, agentMap) {
-  const insightGrid = document.getElementById("insightGrid");
-
-  if (!insightGrid) {
-    return;
-  }
-
-  const insights = generateAdminInsights(orders, commissions, agents, agentMap);
-
-  if (!insights.length) {
-    insightGrid.innerHTML = `
-      <div class="insight-empty">
-        Not enough rental data yet. More insights will appear after the system receives more orders and payment records.
-      </div>
-    `;
-    return;
-  }
-
-  insightGrid.innerHTML = insights.map(insight => {
-    return `
-      <div class="insight-card ${escapeHTML(insight.type)}">
-        <span class="insight-tag">${escapeHTML(insight.type)}</span>
-        <h4>${escapeHTML(insight.title)}</h4>
-        <p>${escapeHTML(insight.message)}</p>
-      </div>
-    `;
-  }).join("");
-}
-
-function generateAdminInsights(orders, commissions, agents, agentMap) {
-  const insights = [];
-
-  if (!orders.length) {
-    insights.push({
-      type: "info",
-      title: "No rental data yet",
-      message: "The system has not recorded any rental orders yet. Once customers submit orders, this section will generate operational tips."
-    });
-
-    return insights;
-  }
-
-  const activeOrders = orders.filter(order => {
-    const health = calculateRentalHealth(order);
-    return health.rentalStatus !== "archived" && health.rentalStatus !== "cancelled";
-  });
-
-  const totalRentalValue = activeOrders.reduce((sum, order) => {
-    return sum + getOrderTotal(order);
-  }, 0);
-
-  const overdueOrders = activeOrders.filter(order => {
-    const health = calculateRentalHealth(order);
-    return health.paymentStatus === "overdue";
-  });
-
-  const behindScheduleOrders = activeOrders.filter(order => {
-    const health = calculateRentalHealth(order);
-    return health.paymentStatus === "behind_schedule";
-  });
-
-  const dueSoonOrders = activeOrders.filter(order => {
-    const health = calculateRentalHealth(order);
-    return health.paymentStatus === "due_soon";
-  });
-
-  const fullyPaidOrders = activeOrders.filter(order => {
-    const health = calculateRentalHealth(order);
-    return health.paymentStatus === "fully_paid";
-  });
-
-  if (activeOrders.length) {
-    insights.push({
-      type: "info",
-      title: "Active rental value",
-      message: `There are ${activeOrders.length} active rental order(s) with a total rental value of ${formatCurrency(totalRentalValue)}. Admin should monitor these orders regularly.`
-    });
-  }
-
-  if (overdueOrders.length) {
-    insights.push({
-      type: "danger",
-      title: "Overdue payments detected",
-      message: `${overdueOrders.length} customer(s) have overdue payments. Admin should follow up before the delay affects ownership transfer or rental completion.`
-    });
-  }
-
-  if (behindScheduleOrders.length) {
-    insights.push({
-      type: "warning",
-      title: "Customers behind schedule",
-      message: `${behindScheduleOrders.length} customer(s) are behind payment schedule. Check missed payment count and contact them before marking the rental as defaulted.`
-    });
-  }
-
-  if (dueSoonOrders.length) {
-    insights.push({
-      type: "warning",
-      title: "Upcoming payments",
-      message: `${dueSoonOrders.length} rental payment(s) are due soon. Admin can prepare reminders to reduce late payments.`
-    });
-  }
-
-  if (fullyPaidOrders.length) {
-    insights.push({
-      type: "success",
-      title: "Ownership transfer needed",
-      message: `${fullyPaidOrders.length} rental(s) are fully paid. Admin should check whether the rental duration is complete and prepare ownership transfer confirmation.`
-    });
-  }
-
-  const topItem = getInsightTopItem(activeOrders);
-
-  if (topItem) {
-    insights.push({
-      type: "success",
-      title: "Best-performing item or package",
-      message: `${topItem.name} is currently the strongest performer with ${topItem.count} active order(s) and ${formatCurrency(topItem.total)} rental value. Consider featuring it more prominently.`
-    });
-  }
-
-  const topAgent = getInsightTopAgent(activeOrders, agentMap);
-
-  if (topAgent) {
-    insights.push({
-      type: "success",
-      title: "Top agent by rental value",
-      message: `${topAgent.name} is currently managing ${formatCurrency(topAgent.total)} in active rental value from ${topAgent.count} order(s).`
-    });
-  }
-
-  const inactiveAgents = getInsightInactiveAgents(activeOrders, agents);
-
-  if (inactiveAgents.length) {
-    insights.push({
-      type: "warning",
-      title: "Agents without active rentals",
-      message: `${inactiveAgents.length} active agent(s) have no active rental sales recorded. Admin may need to check whether they need leads, account support, or clearer package information.`
-    });
-  }
-
-  return insights.slice(0, 8);
-}
-
-function getInsightTopItem(orders) {
-  const itemMap = {};
-
-  orders.forEach(order => {
-    const itemName = getOrderItem(order);
-
-    if (!itemMap[itemName]) {
-      itemMap[itemName] = {
-        name: itemName,
-        count: 0,
-        total: 0
-      };
-    }
-
-    itemMap[itemName].count += 1;
-    itemMap[itemName].total += getOrderTotal(order);
-  });
-
-  return Object.values(itemMap).sort((a, b) => {
-    if (b.count === a.count) {
-      return b.total - a.total;
-    }
-
-    return b.count - a.count;
-  })[0] || null;
-}
-
-function getInsightTopAgent(orders, agentMap) {
-  const agentMapData = {};
-
-  orders.forEach(order => {
-    const agentId =
-      order.agent_id ||
-      order.agentId ||
-      order.assigned_agent_id ||
-      order.agent_name ||
-      null;
-
-    if (!agentId) {
-      return;
-    }
-
-    if (!agentMapData[agentId]) {
-      agentMapData[agentId] = {
-        name: agentMap[agentId] || order.agent_name || agentId,
-        count: 0,
-        total: 0
-      };
-    }
-
-    agentMapData[agentId].count += 1;
-    agentMapData[agentId].total += getOrderTotal(order);
-  });
-
-  return Object.values(agentMapData).sort((a, b) => b.total - a.total)[0] || null;
-}
-
-function getInsightInactiveAgents(orders, agents) {
-  const activeAgentIds = new Set();
-
-  orders.forEach(order => {
-    const agentId =
-      order.agent_id ||
-      order.agentId ||
-      order.assigned_agent_id ||
-      null;
-
-    if (agentId) {
-      activeAgentIds.add(String(agentId));
-    }
-  });
-
-  return agents.filter(agent => {
-    const isActive = agent.is_active !== false;
-    const hasSales =
-      activeAgentIds.has(String(agent.id)) ||
-      activeAgentIds.has(String(agent.auth_user_id));
-
-    return isActive && !hasSales;
-  });
 }
 
 async function fetchRentalOrders() {
@@ -678,11 +471,11 @@ function createAgentMap(agents) {
       "Unnamed Agent";
 
     if (agent.id) {
-      agentMap[agent.id] = agentName;
+      agentMap[String(agent.id)] = agentName;
     }
 
     if (agent.auth_user_id) {
-      agentMap[agent.auth_user_id] = agentName;
+      agentMap[String(agent.auth_user_id)] = agentName;
     }
   });
 
@@ -712,6 +505,7 @@ function renderSummaryCards(orders, commissions) {
 
   const attentionNeeded = orders.filter(order => {
     const health = calculateRentalHealth(order);
+
     return (
       health.paymentStatus === "overdue" ||
       health.paymentStatus === "behind_schedule" ||
@@ -739,6 +533,7 @@ function renderSummaryCards(orders, commissions) {
 
   const completedLabel = document.querySelector("#completedOrders")?.previousElementSibling;
   const pendingLabel = document.querySelector("#pendingOrders")?.previousElementSibling;
+  const revenueLabel = document.querySelector("#totalRevenue")?.previousElementSibling;
 
   if (completedLabel) {
     completedLabel.textContent = "Completed / Fully Paid";
@@ -747,8 +542,6 @@ function renderSummaryCards(orders, commissions) {
   if (pendingLabel) {
     pendingLabel.textContent = "Needs Attention";
   }
-
-  const revenueLabel = document.querySelector("#totalRevenue")?.previousElementSibling;
 
   if (revenueLabel) {
     revenueLabel.textContent = "Total Rental Value";
@@ -784,16 +577,18 @@ function renderTopAgent(orders, agentMap) {
       return;
     }
 
-    if (!agentSales[agentId]) {
-      agentSales[agentId] = {
-        name: agentMap[agentId] || order.agent_name || agentId,
+    const key = String(agentId);
+
+    if (!agentSales[key]) {
+      agentSales[key] = {
+        name: agentMap[key] || order.agent_name || key,
         total: 0,
         count: 0
       };
     }
 
-    agentSales[agentId].total += getOrderTotal(order);
-    agentSales[agentId].count += 1;
+    agentSales[key].total += getOrderTotal(order);
+    agentSales[key].count += 1;
   });
 
   const topAgent = Object.values(agentSales).sort((a, b) => b.total - a.total)[0];
@@ -1100,4 +895,591 @@ function renderEmptyRecentSalesTable(message) {
       <td colspan="6">${escapeHTML(message)}</td>
     </tr>
   `;
+}
+
+function renderAdminInsights(orders, commissions, agents, agentMap) {
+  const insightGrid = document.getElementById("insightGrid");
+
+  if (!insightGrid) {
+    return;
+  }
+
+  const insights = generateAdminInsights(orders, commissions, agents, agentMap);
+
+  if (!insights.length) {
+    insightGrid.innerHTML = `
+      <div class="insight-empty">
+        Not enough rental data yet. More insights will appear after the system receives more orders and payment records.
+      </div>
+    `;
+    return;
+  }
+
+  insightGrid.innerHTML = insights.map(insight => {
+    return `
+      <div class="insight-card ${escapeHTML(insight.type)}">
+        <span class="insight-tag">${escapeHTML(insight.type)}</span>
+        <h4>${escapeHTML(insight.title)}</h4>
+        <p>${escapeHTML(insight.message)}</p>
+      </div>
+    `;
+  }).join("");
+}
+
+function generateAdminInsights(orders, commissions, agents, agentMap) {
+  const insights = [];
+
+  if (!orders.length) {
+    insights.push({
+      type: "info",
+      title: "No rental data yet",
+      message: "The system has not recorded any rental orders yet. Once customers submit orders, this section will generate operational tips."
+    });
+
+    return insights;
+  }
+
+  const activeOrders = orders.filter(order => {
+    const health = calculateRentalHealth(order);
+    return health.rentalStatus !== "archived" && health.rentalStatus !== "cancelled";
+  });
+
+  const totalRentalValue = activeOrders.reduce((sum, order) => {
+    return sum + getOrderTotal(order);
+  }, 0);
+
+  const overdueOrders = activeOrders.filter(order => {
+    const health = calculateRentalHealth(order);
+    return health.paymentStatus === "overdue";
+  });
+
+  const behindScheduleOrders = activeOrders.filter(order => {
+    const health = calculateRentalHealth(order);
+    return health.paymentStatus === "behind_schedule";
+  });
+
+  const dueSoonOrders = activeOrders.filter(order => {
+    const health = calculateRentalHealth(order);
+    return health.paymentStatus === "due_soon";
+  });
+
+  const fullyPaidOrders = activeOrders.filter(order => {
+    const health = calculateRentalHealth(order);
+    return health.paymentStatus === "fully_paid";
+  });
+
+  if (activeOrders.length) {
+    insights.push({
+      type: "info",
+      title: "Active rental value",
+      message: `There are ${activeOrders.length} active rental order(s) with a total rental value of ${formatCurrency(totalRentalValue)}. Admin should monitor these orders regularly.`
+    });
+  }
+
+  if (overdueOrders.length) {
+    insights.push({
+      type: "danger",
+      title: "Overdue payments detected",
+      message: `${overdueOrders.length} customer(s) have overdue payments. Admin should follow up before the delay affects ownership transfer or rental completion.`
+    });
+  }
+
+  if (behindScheduleOrders.length) {
+    insights.push({
+      type: "warning",
+      title: "Customers behind schedule",
+      message: `${behindScheduleOrders.length} customer(s) are behind payment schedule. Check missed payment count and contact them before marking the rental as defaulted.`
+    });
+  }
+
+  if (dueSoonOrders.length) {
+    insights.push({
+      type: "warning",
+      title: "Upcoming payments",
+      message: `${dueSoonOrders.length} rental payment(s) are due soon. Admin can prepare reminders to reduce late payments.`
+    });
+  }
+
+  if (fullyPaidOrders.length) {
+    insights.push({
+      type: "success",
+      title: "Ownership transfer needed",
+      message: `${fullyPaidOrders.length} rental(s) are fully paid. Admin should check whether the rental duration is complete and prepare ownership transfer confirmation.`
+    });
+  }
+
+  const topItem = getInsightTopItem(activeOrders);
+
+  if (topItem) {
+    insights.push({
+      type: "success",
+      title: "Best-performing item or package",
+      message: `${topItem.name} is currently the strongest performer with ${topItem.count} active order(s) and ${formatCurrency(topItem.total)} rental value. Consider featuring it more prominently.`
+    });
+  }
+
+  const topAgent = getInsightTopAgent(activeOrders, agentMap);
+
+  if (topAgent) {
+    insights.push({
+      type: "success",
+      title: "Top agent by rental value",
+      message: `${topAgent.name} is currently managing ${formatCurrency(topAgent.total)} in active rental value from ${topAgent.count} order(s).`
+    });
+  }
+
+  const inactiveAgents = getInsightInactiveAgents(activeOrders, agents);
+
+  if (inactiveAgents.length) {
+    insights.push({
+      type: "warning",
+      title: "Agents without active rentals",
+      message: `${inactiveAgents.length} active agent(s) have no active rental sales recorded. Admin may need to check whether they need leads, account support, or clearer package information.`
+    });
+  }
+
+  return insights.slice(0, 8);
+}
+
+function getInsightTopItem(orders) {
+  const itemMap = {};
+
+  orders.forEach(order => {
+    const itemName = getOrderItem(order);
+
+    if (!itemMap[itemName]) {
+      itemMap[itemName] = {
+        name: itemName,
+        count: 0,
+        total: 0
+      };
+    }
+
+    itemMap[itemName].count += 1;
+    itemMap[itemName].total += getOrderTotal(order);
+  });
+
+  return Object.values(itemMap).sort((a, b) => {
+    if (b.count === a.count) {
+      return b.total - a.total;
+    }
+
+    return b.count - a.count;
+  })[0] || null;
+}
+
+function getInsightTopAgent(orders, agentMap) {
+  const agentMapData = {};
+
+  orders.forEach(order => {
+    const agentId =
+      order.agent_id ||
+      order.agentId ||
+      order.assigned_agent_id ||
+      order.agent_name ||
+      null;
+
+    if (!agentId) {
+      return;
+    }
+
+    const key = String(agentId);
+
+    if (!agentMapData[key]) {
+      agentMapData[key] = {
+        name: agentMap[key] || order.agent_name || key,
+        count: 0,
+        total: 0
+      };
+    }
+
+    agentMapData[key].count += 1;
+    agentMapData[key].total += getOrderTotal(order);
+  });
+
+  return Object.values(agentMapData).sort((a, b) => b.total - a.total)[0] || null;
+}
+
+function getInsightInactiveAgents(orders, agents) {
+  const activeAgentIds = new Set();
+
+  orders.forEach(order => {
+    const agentId =
+      order.agent_id ||
+      order.agentId ||
+      order.assigned_agent_id ||
+      null;
+
+    if (agentId) {
+      activeAgentIds.add(String(agentId));
+    }
+  });
+
+  return agents.filter(agent => {
+    const isActive = agent.is_active !== false;
+    const hasSales =
+      activeAgentIds.has(String(agent.id)) ||
+      activeAgentIds.has(String(agent.auth_user_id));
+
+    return isActive && !hasSales;
+  });
+}
+
+function exportAnalysisToCsv() {
+  if (!analysisOrders.length) {
+    alert("No rental analysis data available to export.");
+    return;
+  }
+
+  const summaryRows = buildSummaryCsvRows();
+  const rentalRows = buildRentalCsvRows();
+  const agentRows = buildAgentCsvRows();
+  const insightRows = buildInsightCsvRows();
+
+  const csvSections = [
+    ["AUTRO RENTAL ANALYSIS EXPORT"],
+    ["Generated At", new Date().toLocaleString("en-MY")],
+    [],
+    ["SUMMARY"],
+    ...summaryRows,
+    [],
+    ["RENTAL RECORDS"],
+    ...rentalRows,
+    [],
+    ["AGENT PERFORMANCE"],
+    ...agentRows,
+    [],
+    ["SYSTEM INSIGHTS"],
+    ...insightRows
+  ];
+
+  const csvContent = csvSections
+    .map(row => row.map(escapeCsvValue).join(","))
+    .join("\n");
+
+  downloadCsvFile(csvContent, `autro-analysis-${getTodayFileName()}.csv`);
+}
+
+function buildSummaryCsvRows() {
+  const activeOrders = analysisOrders.filter(order => {
+    const health = calculateRentalHealth(order);
+    return health.rentalStatus !== "archived" && health.rentalStatus !== "cancelled";
+  });
+
+  const totalRevenue = analysisOrders.reduce((sum, order) => {
+    return sum + getOrderTotal(order);
+  }, 0);
+
+  const activeRentalValue = activeOrders.reduce((sum, order) => {
+    return sum + getOrderTotal(order);
+  }, 0);
+
+  const completedRentals = analysisOrders.filter(order => {
+    const health = calculateRentalHealth(order);
+    return health.rentalStatus === "ownership_transferred" || health.paymentStatus === "fully_paid";
+  }).length;
+
+  const attentionNeeded = analysisOrders.filter(order => {
+    const health = calculateRentalHealth(order);
+
+    return (
+      health.paymentStatus === "overdue" ||
+      health.paymentStatus === "behind_schedule" ||
+      health.rentalStatus === "defaulted"
+    );
+  }).length;
+
+  const totalCommission = analysisCommissions.reduce((sum, commission) => {
+    return sum + Number(
+      commission.commission_amount ||
+      commission.amount ||
+      commission.total_commission ||
+      0
+    );
+  }, 0);
+
+  const averageOrderValue = analysisOrders.length > 0
+    ? totalRevenue / analysisOrders.length
+    : 0;
+
+  return [
+    ["Metric", "Value"],
+    ["Total Rental Value", totalRevenue],
+    ["Active Rental Value", activeRentalValue],
+    ["Total Orders", analysisOrders.length],
+    ["Active Rentals", activeOrders.length],
+    ["Completed / Fully Paid Rentals", completedRentals],
+    ["Needs Attention", attentionNeeded],
+    ["Total Commission", totalCommission],
+    ["Average Order Value", averageOrderValue]
+  ];
+}
+
+function buildRentalCsvRows() {
+  const rows = [
+    [
+      "Customer Name",
+      "Customer Email",
+      "Customer Phone",
+      "Item Type",
+      "Item / Package",
+      "Agent",
+      "Rental Status",
+      "Payment Status",
+      "Payment Action",
+      "Rental Duration Months",
+      "Paid Months",
+      "Months Left",
+      "Monthly Payment",
+      "Amount Paid",
+      "Total Amount",
+      "Missed Payments",
+      "Rental Start Date",
+      "Rental End Date",
+      "Next Payment Date",
+      "Last Payment Date",
+      "Ownership Transferred",
+      "Ownership Transfer Date",
+      "Archive Status",
+      "Archived At",
+      "Created At",
+      "Updated At"
+    ]
+  ];
+
+  analysisOrders.forEach(order => {
+    const health = calculateRentalHealth(order);
+    const progress = getPaidProgress(order);
+
+    rows.push([
+      getOrderCustomer(order),
+      order.customer_email || order.email || "",
+      order.customer_phone || order.phone || "",
+      order.item_type || "",
+      getOrderItem(order),
+      getOrderAgent(order, analysisAgentMap),
+      getRentalStatusLabel(health.rentalStatus),
+      getPaymentStatusLabel(health.paymentStatus),
+      health.action,
+      progress.durationMonths,
+      progress.paidMonths,
+      getMonthsLeft(order),
+      Number(order.monthly_payment || 0),
+      progress.amountPaid,
+      progress.totalAmount,
+      Number(order.missed_payments || 0),
+      formatDate(order.rental_start_date),
+      formatDate(order.rental_end_date),
+      formatDate(order.next_payment_date),
+      formatDate(order.last_payment_date),
+      order.ownership_transferred ? "Yes" : "No",
+      formatDate(order.ownership_transfer_date),
+      order.archive_status || "active",
+      formatDate(order.archived_at),
+      formatDate(getOrderDate(order)),
+      formatDate(order.updated_at)
+    ]);
+  });
+
+  return rows;
+}
+
+function buildAgentCsvRows() {
+  const rows = [
+    [
+      "Agent Name",
+      "Agent Email",
+      "Active Rental Count",
+      "Total Rental Value",
+      "Commission Amount"
+    ]
+  ];
+
+  const agentStats = {};
+
+  analysisAgents.forEach(agent => {
+    const agentId = String(agent.id || "");
+    const authUserId = String(agent.auth_user_id || "");
+
+    const agentName =
+      agent.name ||
+      agent.agent_name ||
+      agent.full_name ||
+      agent.email ||
+      "Unnamed Agent";
+
+    const agentEmail = agent.email || "";
+
+    if (agentId) {
+      agentStats[agentId] = {
+        name: agentName,
+        email: agentEmail,
+        count: 0,
+        total: 0,
+        commission: 0
+      };
+    }
+
+    if (authUserId && !agentStats[authUserId]) {
+      agentStats[authUserId] = {
+        name: agentName,
+        email: agentEmail,
+        count: 0,
+        total: 0,
+        commission: 0
+      };
+    }
+  });
+
+  analysisOrders.forEach(order => {
+    const health = calculateRentalHealth(order);
+
+    if (health.rentalStatus === "archived" || health.rentalStatus === "cancelled") {
+      return;
+    }
+
+    const agentId =
+      order.agent_id ||
+      order.agentId ||
+      order.assigned_agent_id ||
+      null;
+
+    if (!agentId) {
+      return;
+    }
+
+    const key = String(agentId);
+
+    if (!agentStats[key]) {
+      agentStats[key] = {
+        name: order.agent_name || key,
+        email: order.agent_email || order.agent_code || "",
+        count: 0,
+        total: 0,
+        commission: 0
+      };
+    }
+
+    agentStats[key].count += 1;
+    agentStats[key].total += getOrderTotal(order);
+  });
+
+  analysisCommissions.forEach(commission => {
+    const agentId =
+      commission.agent_id ||
+      commission.agentId ||
+      commission.assigned_agent_id ||
+      null;
+
+    if (!agentId) {
+      return;
+    }
+
+    const key = String(agentId);
+
+    if (!agentStats[key]) {
+      agentStats[key] = {
+        name: analysisAgentMap[key] || key,
+        email: "",
+        count: 0,
+        total: 0,
+        commission: 0
+      };
+    }
+
+    agentStats[key].commission += Number(
+      commission.commission_amount ||
+      commission.amount ||
+      commission.total_commission ||
+      0
+    );
+  });
+
+  Object.values(agentStats).forEach(agent => {
+    rows.push([
+      agent.name,
+      agent.email,
+      agent.count,
+      agent.total,
+      agent.commission
+    ]);
+  });
+
+  return rows;
+}
+
+function buildInsightCsvRows() {
+  const rows = [
+    ["Type", "Title", "Message"]
+  ];
+
+  const insights = generateAdminInsights(
+    analysisOrders,
+    analysisCommissions,
+    analysisAgents,
+    analysisAgentMap
+  );
+
+  if (!insights.length) {
+    rows.push([
+      "info",
+      "No insights",
+      "Not enough rental data to generate insights yet."
+    ]);
+
+    return rows;
+  }
+
+  insights.forEach(insight => {
+    rows.push([
+      insight.type,
+      insight.title,
+      insight.message
+    ]);
+  });
+
+  return rows;
+}
+
+function escapeCsvValue(value) {
+  const stringValue = String(value ?? "");
+
+  if (
+    stringValue.includes(",") ||
+    stringValue.includes('"') ||
+    stringValue.includes("\n") ||
+    stringValue.includes("\r")
+  ) {
+    return `"${stringValue.replaceAll('"', '""')}"`;
+  }
+
+  return stringValue;
+}
+
+function downloadCsvFile(csvContent, fileName) {
+  const bom = "\uFEFF";
+  const blob = new Blob([bom + csvContent], {
+    type: "text/csv;charset=utf-8;"
+  });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+function getTodayFileName() {
+  const date = new Date();
+
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, "0"),
+    String(date.getDate()).padStart(2, "0")
+  ].join("-");
 }
